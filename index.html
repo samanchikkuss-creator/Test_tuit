@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Подготовка к сессии — Все предметы</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --primary-light: #c4b5fd;
+            --accent: #06b6d4;
+            --accent-pink: #ec4899;
+            --success: #10b981;
+            --success-dark: #059669;
+            --error: #f43f5e;
+            --warning: #f59e0b;
+            --bg: #0f0b1e;
+            --surface: rgba(30, 23, 57, 0.65);
+            --surface-solid: #1a1533;
+            --text: #f1f0fa;
+            --text-secondary: #a29fc4;
+            --border: rgba(148, 130, 219, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.35), transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.25), transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.25), transparent 45%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        .hero { text-align: center; margin-bottom: 50px; }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.6rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink), var(--primary));
+            background-size: 300% 100%;
+            animation: gradientShift 6s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 22px;
+        }
+
+        .subject-card {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 22px;
+            padding: 28px 24px;
+            border: 1.5px solid var(--border);
+            text-decoration: none;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(6,182,212,0.12));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 45px -12px rgba(124, 58, 237, 0.45);
+        }
+
+        .subject-card:hover::before { opacity: 1; }
+
+        .subject-icon {
+            font-size: 2.2rem;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            box-shadow: 0 10px 25px -6px rgba(124, 58, 237, 0.5);
+        }
+
+        .subject-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .subject-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            position: relative;
+            z-index: 1;
+        }
+
+        .subject-arrow {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            position: relative;
+            z-index: 1;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            body { padding: 24px 14px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <h1><i class="fas fa-graduation-cap"></i> Подготовка к сессии</h1>
+            <p>Выбери предмет и начинай тренироваться</p>
+        </div>
+
+        <div class="subjects-grid">
+            <a class="subject-card" href="subjects/struktura.html">
+                <div class="subject-icon"><i class="fas fa-diagram-project"></i></div>
+                <div class="subject-title">Структуры данных</div>
+                <div class="subject-desc">Массивы, деревья, графы, стеки — 350+ вопросов</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a class="subject-card" href="subjects/ii.html">
+                <div class="subject-icon"><i class="fas fa-brain"></i></div>
+                <div class="subject-title">Искусственный интеллект</div>
+                <div class="subject-desc">Основы ИИ и машинного обучения</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a class="subject-card" href="subjects/kiber.html">
+                <div class="subject-icon"><i class="fas fa-shield-halved"></i></div>
+                <div class="subject-title">Кибербезопасность</div>
+                <div class="subject-desc">750+ вопросов — новая и старая базы</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a class="subject-card" href="subjects/history.html">
+                <div class="subject-icon"><i class="fas fa-landmark"></i></div>
+                <div class="subject-title">История Узбекистана</div>
+                <div class="subject-desc">225 вопросов по истории</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a class="subject-card" href="subjects/bd.html">
+                <div class="subject-icon"><i class="fas fa-database"></i></div>
+                <div class="subject-title">Базы данных</div>
+                <div class="subject-desc">SQL, проектирование, нормализация</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a class="subject-card" href="subjects/discretka.html">
+                <div class="subject-icon"><i class="fas fa-calculator"></i></div>
+                <div class="subject-title">Дискретная математика</div>
+                <div class="subject-desc">Логика, множества, комбинаторика</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+
+            <a class="subject-card" href="subjects/kompseti.html">
+                <div class="subject-icon"><i class="fas fa-network-wired"></i></div>
+                <div class="subject-title">Компьютерные сети</div>
+                <div class="subject-desc">Протоколы, топологии, модель OSI</div>
+                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+            </a>
+        </div>
+
+        <footer>Удачи на сессии 🍀</footer>
+    </div>
+</body>
+</html>
