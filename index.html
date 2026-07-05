@@ -11,39 +11,37 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
-            --primary: #7c3aed;
-            --primary-dark: #6d28d9;
-            --primary-light: #c4b5fd;
-            --accent: #06b6d4;
-            --accent-pink: #ec4899;
-            --success: #10b981;
-            --success-dark: #059669;
-            --error: #f43f5e;
-            --warning: #f59e0b;
-            --bg: #0f0b1e;
-            --surface: rgba(30, 23, 57, 0.65);
-            --surface-solid: #1a1533;
-            --text: #f1f0fa;
-            --text-secondary: #a29fc4;
-            --border: rgba(148, 130, 219, 0.25);
+            --primary: #6d5ef0;
+            --accent: #17c3b2;
+            --accent-warm: #f7a04b;
+            --bg: #0d0f1a;
+            --surface: rgba(28, 30, 48, 0.6);
+            --border: rgba(140, 145, 200, 0.22);
+            --text: #eef0f7;
+            --text-secondary: #9497b3;
         }
+
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
             background: var(--bg);
             background-image:
-                radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.35), transparent 40%),
-                radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.25), transparent 40%),
-                radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.25), transparent 45%);
+                radial-gradient(circle at 10% 10%, rgba(109, 94, 240, 0.28), transparent 40%),
+                radial-gradient(circle at 90% 15%, rgba(23, 195, 178, 0.20), transparent 42%),
+                radial-gradient(circle at 50% 100%, rgba(247, 160, 75, 0.12), transparent 45%);
             background-attachment: fixed;
             color: var(--text);
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 50px 20px;
+            transition: opacity 0.32s ease, transform 0.32s ease;
         }
 
-        .container { max-width: 1100px; margin: 0 auto; }
+        body.leaving { opacity: 0; transform: scale(0.98); }
 
-        .hero { text-align: center; margin-bottom: 50px; }
+        .container { max-width: 620px; margin: 0 auto; }
+
+        .hero { margin-bottom: 28px; }
 
         @keyframes gradientShift {
             0%, 100% { background-position: 0% 50%; }
@@ -52,177 +50,259 @@
 
         h1 {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 2.6rem;
+            font-size: 1.9rem;
             font-weight: 700;
-            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink), var(--primary));
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-warm), var(--primary));
             background-size: 300% 100%;
-            animation: gradientShift 6s ease infinite;
+            animation: gradientShift 7s ease infinite;
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 12px;
-            letter-spacing: -0.5px;
+            margin-bottom: 8px;
         }
 
-        .hero p {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
+        .hero-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .subjects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 22px;
+        .hero p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        .subject-count {
+            font-size: 0.78rem;
+            color: var(--accent);
+            background: rgba(23, 195, 178, 0.12);
+            border: 1px solid rgba(23, 195, 178, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
         }
 
-        .subject-card {
-            background: var(--surface);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border-radius: 22px;
-            padding: 28px 24px;
+        .search-box {
+            width: 100%;
+            padding: 12px 18px;
+            margin: 20px 0 22px;
+            border-radius: 14px;
             border: 1.5px solid var(--border);
-            text-decoration: none;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
             color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-box::placeholder { color: var(--text-secondary); }
+        .search-box:focus { border-color: var(--accent); }
+
+        .subjects-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            transition: all 0.3s cubic-bezier(.2,.8,.2,1);
-            position: relative;
-            overflow: hidden;
         }
 
-        .subject-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(124,58,237,0.18), rgba(6,182,212,0.12));
-            opacity: 0;
-            transition: opacity 0.3s ease;
+        .subject-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px;
+            background: var(--surface);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.25s cubic-bezier(.2,.8,.2,1), border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .subject-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 45px -12px rgba(124, 58, 237, 0.45);
+        .subject-row:hover {
+            transform: translateX(4px);
+            border-color: var(--accent);
+            box-shadow: 0 16px 30px -12px rgba(23, 195, 178, 0.3);
         }
 
-        .subject-card:hover::before { opacity: 1; }
+        .subject-row.clicked {
+            transform: scale(0.96);
+            transition: transform 0.2s ease;
+        }
+
+        .subject-row.hidden-by-search { display: none; }
 
         .subject-icon {
-            font-size: 2.2rem;
-            width: 60px;
-            height: 60px;
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 16px;
+            border-radius: 12px;
             background: linear-gradient(135deg, var(--primary), var(--accent));
-            box-shadow: 0 10px 25px -6px rgba(124, 58, 237, 0.5);
+            font-size: 1.1rem;
+            box-shadow: 0 8px 18px -6px rgba(109, 94, 240, 0.5);
         }
+
+        .subject-info { flex: 1; min-width: 0; }
 
         .subject-title {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 1.25rem;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
+            font-size: 1.02rem;
+            font-weight: 600;
         }
 
         .subject-desc {
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             color: var(--text-secondary);
-            position: relative;
-            z-index: 1;
+            margin-top: 2px;
         }
 
-        .subject-arrow {
-            margin-top: auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
+        .chevron {
+            color: var(--text-secondary);
             font-size: 0.85rem;
-            font-weight: 600;
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+
+        .subject-row:hover .chevron {
+            transform: translateX(3px);
             color: var(--accent);
-            position: relative;
-            z-index: 1;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 30px 0;
+            font-size: 0.9rem;
+            display: none;
         }
 
         footer {
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
             color: var(--text-secondary);
             font-size: 0.8rem;
         }
 
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
 
-        @media (max-width: 600px) {
-            h1 { font-size: 1.8rem; }
-            body { padding: 24px 14px; }
+        @media (max-width: 500px) {
+            body { padding: 30px 14px; }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="hero">
-            <h1><i class="fas fa-graduation-cap"></i> Подготовка к сессии</h1>
+            <div class="hero-row">
+                <h1>Подготовка к сессии</h1>
+                <span class="subject-count" id="subjectCount">7 предметов</span>
+            </div>
             <p>Выбери предмет и начинай тренироваться</p>
         </div>
 
-        <div class="subjects-grid">
-            <a class="subject-card" href="subjects/struktura.html">
+        <input type="text" class="search-box" id="searchBox" placeholder="🔍 Найти предмет..." oninput="filterSubjects()">
+
+        <div class="subjects-list" id="subjectsList">
+            <a class="subject-row" data-name="структуры данных массивы деревья графы стеки" data-href="subjects/struktura.html">
                 <div class="subject-icon"><i class="fas fa-diagram-project"></i></div>
-                <div class="subject-title">Структуры данных</div>
-                <div class="subject-desc">Массивы, деревья, графы, стеки — 350+ вопросов</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">Структуры данных</div>
+                    <div class="subject-desc">Массивы, деревья, графы, стеки</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
 
-            <a class="subject-card" href="subjects/ii.html">
+            <a class="subject-row" data-name="искусственный интеллект ии машинное обучение" data-href="subjects/ii.html">
                 <div class="subject-icon"><i class="fas fa-brain"></i></div>
-                <div class="subject-title">Искусственный интеллект</div>
-                <div class="subject-desc">Основы ИИ и машинного обучения</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">Искусственный интеллект</div>
+                    <div class="subject-desc">Основы ИИ и машинного обучения</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
 
-            <a class="subject-card" href="subjects/kiber.html">
+            <a class="subject-row" data-name="кибербезопасность защита данных" data-href="subjects/kiber.html">
                 <div class="subject-icon"><i class="fas fa-shield-halved"></i></div>
-                <div class="subject-title">Кибербезопасность</div>
-                <div class="subject-desc">750+ вопросов — новая и старая базы</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">Кибербезопасность</div>
+                    <div class="subject-desc">Новая и старая базы вопросов</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
 
-            <a class="subject-card" href="subjects/history.html">
+            <a class="subject-row" data-name="история узбекистана" data-href="subjects/history.html">
                 <div class="subject-icon"><i class="fas fa-landmark"></i></div>
-                <div class="subject-title">История Узбекистана</div>
-                <div class="subject-desc">225 вопросов по истории</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">История Узбекистана</div>
+                    <div class="subject-desc">225 вопросов по истории</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
 
-            <a class="subject-card" href="subjects/bd.html">
+            <a class="subject-row" data-name="базы данных sql нормализация" data-href="subjects/bd.html">
                 <div class="subject-icon"><i class="fas fa-database"></i></div>
-                <div class="subject-title">Базы данных</div>
-                <div class="subject-desc">SQL, проектирование, нормализация</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">Базы данных</div>
+                    <div class="subject-desc">SQL, проектирование, нормализация</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
 
-            <a class="subject-card" href="subjects/discretka.html">
+            <a class="subject-row" data-name="дискретная математика логика множества комбинаторика" data-href="subjects/discretka.html">
                 <div class="subject-icon"><i class="fas fa-calculator"></i></div>
-                <div class="subject-title">Дискретная математика</div>
-                <div class="subject-desc">Логика, множества, комбинаторика</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">Дискретная математика</div>
+                    <div class="subject-desc">Логика, множества, комбинаторика</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
 
-            <a class="subject-card" href="subjects/kompseti.html">
+            <a class="subject-row" data-name="компьютерные сети протоколы osi" data-href="subjects/kompseti.html">
                 <div class="subject-icon"><i class="fas fa-network-wired"></i></div>
-                <div class="subject-title">Компьютерные сети</div>
-                <div class="subject-desc">Протоколы, топологии, модель OSI</div>
-                <div class="subject-arrow">Открыть <i class="fas fa-arrow-right"></i></div>
+                <div class="subject-info">
+                    <div class="subject-title">Компьютерные сети</div>
+                    <div class="subject-desc">Протоколы, топологии, модель OSI</div>
+                </div>
+                <i class="fas fa-chevron-right chevron"></i>
             </a>
         </div>
 
+        <div class="no-results" id="noResults">Ничего не найдено 🔍</div>
+
         <footer>Удачи на сессии 🍀</footer>
     </div>
+
+    <script>
+        document.querySelectorAll('.subject-row').forEach(row => {
+            row.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = row.getAttribute('data-href');
+                row.classList.add('clicked');
+                document.body.classList.add('leaving');
+                setTimeout(() => { window.location.href = target; }, 300);
+            });
+        });
+
+        function filterSubjects() {
+            const term = document.getElementById('searchBox').value.trim().toLowerCase();
+            const rows = document.querySelectorAll('.subject-row');
+            let visibleCount = 0;
+            rows.forEach(row => {
+                const match = row.getAttribute('data-name').includes(term);
+                row.classList.toggle('hidden-by-search', !match);
+                if (match) visibleCount++;
+            });
+            document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+            document.getElementById('subjectCount').textContent = term
+                ? `${visibleCount} найдено`
+                : `${rows.length} предметов`;
+        }
+    </script>
 </body>
 </html>
