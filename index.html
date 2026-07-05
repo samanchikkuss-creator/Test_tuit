@@ -10,6 +10,8 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        .hidden { display: none !important; }
+
         :root {
             --primary: #6d5ef0;
             --accent: #17c3b2;
@@ -26,18 +28,57 @@
         body {
             font-family: 'Inter', 'Segoe UI', sans-serif;
             background: var(--bg);
-            background-image:
-                radial-gradient(circle at 10% 10%, rgba(109, 94, 240, 0.28), transparent 40%),
-                radial-gradient(circle at 90% 15%, rgba(23, 195, 178, 0.20), transparent 42%),
-                radial-gradient(circle at 50% 100%, rgba(247, 160, 75, 0.12), transparent 45%);
-            background-attachment: fixed;
             color: var(--text);
             min-height: 100vh;
             padding: 50px 20px;
             transition: opacity 0.32s ease, transform 0.32s ease;
+            position: relative;
+            overflow-x: hidden;
         }
 
         body.leaving { opacity: 0; transform: scale(0.98); }
+
+        .parallax-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(10px);
+            will-change: transform;
+            transition: transform 0.15s ease-out;
+        }
+
+        .blob-1 {
+            width: 46vw;
+            height: 46vw;
+            top: -8%;
+            left: -6%;
+            background: radial-gradient(circle, rgba(109, 94, 240, 0.32), transparent 70%);
+        }
+
+        .blob-2 {
+            width: 42vw;
+            height: 42vw;
+            top: 2%;
+            right: -8%;
+            background: radial-gradient(circle, rgba(23, 195, 178, 0.24), transparent 70%);
+        }
+
+        .blob-3 {
+            width: 50vw;
+            height: 50vw;
+            bottom: -14%;
+            left: 30%;
+            background: radial-gradient(circle, rgba(247, 160, 75, 0.16), transparent 70%);
+        }
+
+        .container { position: relative; z-index: 1; }
 
         .container { max-width: 620px; margin: 0 auto; }
 
@@ -104,6 +145,45 @@
             gap: 10px;
         }
 
+        @keyframes fadeUpIn {
+            0% { opacity: 0; transform: translateY(28px) scale(0.9); filter: blur(4px); }
+            55% { opacity: 1; filter: blur(0); }
+            70% { transform: translateY(-6px) scale(1.02); }
+            85% { transform: translateY(2px) scale(0.995); }
+            100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+        }
+
+        .hero {
+            opacity: 0;
+            animation: fadeUpIn 0.9s cubic-bezier(.22,1,.36,1) forwards;
+        }
+
+        .search-box {
+            opacity: 0;
+            animation: fadeUpIn 0.9s cubic-bezier(.22,1,.36,1) forwards;
+            animation-delay: 0.25s;
+        }
+
+        .subject-row {
+            opacity: 0;
+            animation: fadeUpIn 0.85s cubic-bezier(.22,1,.36,1) forwards;
+        }
+
+        .subject-row:nth-child(1) { animation-delay: 0.42s; }
+        .subject-row:nth-child(2) { animation-delay: 0.58s; }
+        .subject-row:nth-child(3) { animation-delay: 0.74s; }
+        .subject-row:nth-child(4) { animation-delay: 0.90s; }
+        .subject-row:nth-child(5) { animation-delay: 1.06s; }
+        .subject-row:nth-child(6) { animation-delay: 1.22s; }
+        .subject-row:nth-child(7) { animation-delay: 1.38s; }
+        .subject-row:nth-child(n+8) { animation-delay: 1.54s; }
+
+        footer {
+            opacity: 0;
+            animation: fadeUpIn 0.85s cubic-bezier(.22,1,.36,1) forwards;
+            animation-delay: 1.70s;
+        }
+
         .subject-row {
             display: flex;
             align-items: center;
@@ -133,6 +213,67 @@
 
         .subject-row.hidden-by-search { display: none; }
 
+        .subject-row {
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes iconBreathe {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
+        .subject-row:hover .subject-icon {
+            animation: iconBreathe 1.1s ease-in-out infinite;
+        }
+
+        .progress-strip {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent), var(--primary));
+            transition: width 0.8s cubic-bezier(.22,1,.36,1);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .progress-label {
+            font-size: 0.72rem;
+            color: var(--accent);
+            font-weight: 600;
+            margin-left: auto;
+            padding-left: 8px;
+            white-space: nowrap;
+        }
+
+        @keyframes skeletonPulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 0.9; }
+        }
+
+        .skeleton-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 18px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 10px;
+        }
+
+        .skeleton-icon, .skeleton-line {
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            animation: skeletonPulse 1.2s ease-in-out infinite;
+        }
+
+        .skeleton-icon { width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0; }
+        .skeleton-lines { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .skeleton-line { height: 12px; width: 60%; }
+        .skeleton-line.short { width: 35%; height: 9px; }
+
         .subject-icon {
             flex-shrink: 0;
             width: 42px;
@@ -144,6 +285,7 @@
             background: linear-gradient(135deg, var(--primary), var(--accent));
             font-size: 1.1rem;
             box-shadow: 0 8px 18px -6px rgba(109, 94, 240, 0.5);
+            transition: transform 0.3s ease;
         }
 
         .subject-info { flex: 1; min-width: 0; }
@@ -197,6 +339,11 @@
     </style>
 </head>
 <body>
+    <div class="parallax-blobs">
+        <div class="blob blob-1" id="blob1"></div>
+        <div class="blob blob-2" id="blob2"></div>
+        <div class="blob blob-3" id="blob3"></div>
+    </div>
     <div class="container">
         <div class="hero">
             <div class="hero-row">
@@ -208,68 +355,88 @@
 
         <input type="text" class="search-box" id="searchBox" placeholder="🔍 Найти предмет..." oninput="filterSubjects()">
 
-        <div class="subjects-list" id="subjectsList">
-            <a class="subject-row" data-name="структуры данных массивы деревья графы стеки" data-href="subjects/struktura.html">
+        <div class="subjects-list" id="skeletonList">
+            <div class="skeleton-row"><div class="skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+            <div class="skeleton-row"><div class="skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+            <div class="skeleton-row"><div class="skeleton-icon"></div><div class="skeleton-lines"><div class="skeleton-line"></div><div class="skeleton-line short"></div></div></div>
+        </div>
+
+        <div class="subjects-list hidden" id="subjectsList">
+            <a class="subject-row" data-subject-id="struktura" data-name="структуры данных массивы деревья графы стеки" data-href="subjects/struktura.html">
                 <div class="subject-icon"><i class="fas fa-diagram-project"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">Структуры данных</div>
                     <div class="subject-desc">Массивы, деревья, графы, стеки</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
 
-            <a class="subject-row" data-name="искусственный интеллект ии машинное обучение" data-href="subjects/ii.html">
+            <a class="subject-row" data-subject-id="ii" data-name="искусственный интеллект ии машинное обучение" data-href="subjects/ii.html">
                 <div class="subject-icon"><i class="fas fa-brain"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">Искусственный интеллект</div>
                     <div class="subject-desc">Основы ИИ и машинного обучения</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
 
-            <a class="subject-row" data-name="кибербезопасность защита данных" data-href="subjects/kiber.html">
+            <a class="subject-row" data-subject-id="kiber" data-name="кибербезопасность защита данных" data-href="subjects/kiber.html">
                 <div class="subject-icon"><i class="fas fa-shield-halved"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">Кибербезопасность</div>
                     <div class="subject-desc">Новая и старая базы вопросов</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
 
-            <a class="subject-row" data-name="история узбекистана" data-href="subjects/history.html">
+            <a class="subject-row" data-subject-id="history" data-name="история узбекистана" data-href="subjects/history.html">
                 <div class="subject-icon"><i class="fas fa-landmark"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">История Узбекистана</div>
                     <div class="subject-desc">225 вопросов по истории</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
 
-            <a class="subject-row" data-name="базы данных sql нормализация" data-href="subjects/bd.html">
+            <a class="subject-row" data-subject-id="bd" data-name="базы данных sql нормализация" data-href="subjects/bd.html">
                 <div class="subject-icon"><i class="fas fa-database"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">Базы данных</div>
                     <div class="subject-desc">SQL, проектирование, нормализация</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
 
-            <a class="subject-row" data-name="дискретная математика логика множества комбинаторика" data-href="subjects/discretka.html">
+            <a class="subject-row" data-subject-id="discretka" data-name="дискретная математика логика множества комбинаторика" data-href="subjects/discretka.html">
                 <div class="subject-icon"><i class="fas fa-calculator"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">Дискретная математика</div>
                     <div class="subject-desc">Логика, множества, комбинаторика</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
 
-            <a class="subject-row" data-name="компьютерные сети протоколы osi" data-href="subjects/kompseti.html">
+            <a class="subject-row" data-subject-id="kompseti" data-name="компьютерные сети протоколы osi" data-href="subjects/kompseti.html">
                 <div class="subject-icon"><i class="fas fa-network-wired"></i></div>
                 <div class="subject-info">
                     <div class="subject-title">Компьютерные сети</div>
                     <div class="subject-desc">Протоколы, топологии, модель OSI</div>
                 </div>
                 <i class="fas fa-chevron-right chevron"></i>
+                <span class="progress-label" data-progress-label></span>
+                <div class="progress-strip" data-progress-strip></div>
             </a>
         </div>
 
@@ -302,6 +469,71 @@
             document.getElementById('subjectCount').textContent = term
                 ? `${visibleCount} найдено`
                 : `${rows.length} предметов`;
+        }
+
+        function loadProgress() {
+            document.querySelectorAll('.subject-row').forEach(row => {
+                const sid = row.getAttribute('data-subject-id');
+                if (!sid) return;
+                const stored = localStorage.getItem('hub_progress_' + sid);
+                const strip = row.querySelector('[data-progress-strip]');
+                const label = row.querySelector('[data-progress-label]');
+                if (stored) {
+                    const pct = Math.max(0, Math.min(100, parseInt(stored, 10) || 0));
+                    requestAnimationFrame(() => { strip.style.width = pct + '%'; });
+                    label.textContent = pct + '%';
+                } else {
+                    label.textContent = '';
+                }
+            });
+        }
+
+        function revealList() {
+            const skeleton = document.getElementById('skeletonList');
+            const realList = document.getElementById('subjectsList');
+            skeleton.style.display = 'none';
+            realList.classList.remove('hidden');
+            loadProgress();
+        }
+
+        setTimeout(revealList, 550);
+
+        const blobs = [
+            { el: document.getElementById('blob1'), factor: 22 },
+            { el: document.getElementById('blob2'), factor: 16 },
+            { el: document.getElementById('blob3'), factor: 12 }
+        ];
+
+        function applyParallax(nx, ny) {
+            blobs.forEach(b => {
+                const x = nx * b.factor;
+                const y = ny * b.factor;
+                b.el.style.transform = `translate(${x}px, ${y}px)`;
+            });
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            const nx = (e.clientX / window.innerWidth - 0.5) * 2;
+            const ny = (e.clientY / window.innerHeight - 0.5) * 2;
+            applyParallax(nx, ny);
+        });
+
+        let lastTouch = null;
+        window.addEventListener('touchmove', (e) => {
+            const t = e.touches[0];
+            if (!t) return;
+            const nx = (t.clientX / window.innerWidth - 0.5) * 2;
+            const ny = (t.clientY / window.innerHeight - 0.5) * 2;
+            applyParallax(nx, ny);
+        }, { passive: true });
+
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                if (e.beta === null || e.gamma === null) return;
+                const nx = Math.max(-1, Math.min(1, e.gamma / 30));
+                const ny = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
+                applyParallax(nx, ny);
+            });
         }
     </script>
 </body>
