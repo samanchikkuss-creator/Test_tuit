@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Тесты по ИИ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --primary-light: #c4b5fd;
+            --accent: #06b6d4;
+            --accent-pink: #ec4899;
+            --success: #10b981;
+            --success-dark: #059669;
+            --error: #f43f5e;
+            --error-dark: #e11d48;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg: #0f0b1e;
+            --surface: rgba(30, 23, 57, 0.65);
+            --surface-solid: #1a1533;
+            --text: #f1f0fa;
+            --text-secondary: #a29fc4;
+            --border: rgba(148, 130, 219, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.35), transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.25), transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.25), transparent 45%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink), var(--primary));
+            background-size: 300% 100%;
+            animation: gradientShift 6s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        h1 i {
+            -webkit-text-fill-color: initial;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px 26px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: var(--text);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-results {
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stage-card {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.4);
+        }
+
+        .stage-card:hover::before {
+            opacity: 1;
+        }
+
+        .stats-panel {
+            background: linear-gradient(135deg, var(--primary), var(--accent-pink) 120%);
+            border-radius: 20px;
+            padding: 22px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px -8px rgba(124, 58, 237, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ea580c);
+            color: white;
+        }
+
+        .option {
+            padding: 16px 20px;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text);
+            width: 100%;
+            margin-bottom: 12px;
+            transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+            text-align: left;
+            font-size: 1em;
+        }
+
+        .option:hover:not(:disabled) {
+            transform: translateX(6px);
+            border-color: var(--accent);
+            box-shadow: 0 6px 20px -6px rgba(6, 182, 212, 0.4);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            border-color: var(--success);
+            box-shadow: 0 6px 20px -4px rgba(16, 185, 129, 0.5);
+        }
+
+        .option.wrong {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+            border-color: var(--error);
+            box-shadow: 0 6px 20px -4px rgba(244, 63, 94, 0.5);
+        }
+
+        .option:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 6px 20px -4px rgba(124, 58, 237, 0.5);
+        }
+
+        .session-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+            color: white;
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            box-shadow: 0 6px 16px -4px rgba(124, 58, 237, 0.5);
+        }
+
+        .review-item {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--error);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .review-item .review-q {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .review-item .review-your {
+            color: var(--error);
+            margin-bottom: 6px;
+        }
+
+        .review-item .review-correct {
+            color: var(--success);
+        }
+
+        .numbers-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            max-height: 140px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 2px solid var(--border);
+        }
+
+        .num-item {
+            min-width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .num-item:hover {
+            border-color: var(--accent);
+            transform: scale(1.08);
+        }
+
+        .num-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 14px -2px rgba(124, 58, 237, 0.6);
+        }
+
+        .num-item.correct {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            border-color: var(--success);
+        }
+
+        .num-item.wrong {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+            border-color: var(--error);
+        }
+
+        .progress-section {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(148, 130, 219, 0.15);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink));
+            background-size: 200% 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .timer {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .question-text {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 400px;
+            max-width: 90%;
+            height: 100%;
+            background: var(--surface-solid);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+            z-index: 1000;
+            padding: 80px 20px 20px;
+            overflow-y: auto;
+            color: var(--text);
+            border-left: 1px solid var(--border);
+        }
+
+        .side-panel.active {
+            right: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 26px;
+            border-radius: 14px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            color: var(--text);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(16px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .grade-badge {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            filter: drop-shadow(0 0 25px currentColor);
+        }
+
+        .stats-box {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+        }
+
+        .result-sticker {
+            font-size: 5rem;
+            margin: 10px 0 20px;
+            line-height: 1;
+            display: inline-block;
+        }
+
+        @keyframes stickerPop {
+            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+            60% { transform: scale(1.25) rotate(8deg); opacity: 1; }
+            80% { transform: scale(0.95) rotate(-4deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        @keyframes stickerBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+
+        @keyframes stickerWobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
+        }
+
+        @keyframes stickerShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            20% { transform: translateX(-6px) rotate(-4deg); }
+            40% { transform: translateX(6px) rotate(4deg); }
+            60% { transform: translateX(-4px) rotate(-2deg); }
+            80% { transform: translateX(4px) rotate(2deg); }
+        }
+
+        .result-sticker.grade-5 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards, stickerBounce 1.4s ease-in-out 0.6s infinite;
+        }
+
+        .result-sticker.grade-4 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards, stickerWobble 1.8s ease-in-out 0.6s infinite;
+        }
+
+        .result-sticker.grade-3 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards;
+        }
+
+        .result-sticker.grade-2 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards, stickerShake 0.6s ease-in-out 0.7s;
+        }
+
+        .confetti-piece {
+            position: fixed;
+            top: -20px;
+            width: 10px;
+            height: 14px;
+            opacity: 0.9;
+            pointer-events: none;
+            z-index: 1200;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(540deg); opacity: 0.4; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            h1 { font-size: 1.3rem; }
+            .option { padding: 12px 16px; }
+            .num-item { min-width: 40px; height: 40px; font-size: 0.85rem; }
+            .btn { padding: 10px 16px; font-size: 0.85rem; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .name-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 6, 24, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .name-modal {
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 60px -10px rgba(124, 58, 237, 0.5);
+            animation: stickerPop 0.4s cubic-bezier(.3,1.6,.5,1) forwards;
+        }
+
+        .name-modal h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        .name-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .name-modal input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-size: 1em;
+            outline: none;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .name-modal input:focus {
+            border-color: var(--accent);
+        }
+
+        .participants-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .greeting-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: statusPulse 1.6s ease-in-out infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { box-shadow: 0 0 6px var(--success); }
+            50% { box-shadow: 0 0 14px var(--success); }
+        }
+
+        .online-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+    </style>
+
+    <style>
+        .back-to-hub {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(30, 23, 57, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 130, 219, 0.3);
+            border-radius: 30px;
+            color: #f1f0fa;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 8px 20px -4px rgba(0,0,0,0.4);
+            transition: all 0.25s ease;
+        }
+        .back-to-hub:hover {
+            transform: translateX(-3px);
+            border-color: #06b6d4;
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html" class="back-to-hub"><i class="fas fa-arrow-left"></i> Все предметы</a>
+
+    <div class="container">
+        <div class="header">
+            <h1>
+                <i class="fas fa-brain"></i>
+                Тесты по ИИ
+                <i class="fas fa-robot"></i>
+            </h1>
+        </div>
+
+        <div id="menu-screen">
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск вопросов..." onkeyup="searchQuestions()">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <div class="stats-panel">
+                <h3><i class="fas fa-chart-line"></i> Ваша статистика</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalTests">0</div>
+                        <div class="stat-label">Пройдено тестов</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="avgScore">0%</div>
+                        <div class="stat-label">Средний результат</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="totalErrors">0</div>
+                        <div class="stat-label">Ошибок всего</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="bestScore">0%</div>
+                        <div class="stat-label">Лучший результат</div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="startErrorsOnly()">
+                    <i class="fas fa-bug"></i> Только ошибки
+                </button>
+                <button class="btn btn-primary" onclick="startRandom30()">
+                    <i class="fas fa-random"></i> Случайные 30
+                </button>
+                <button class="btn btn-primary" onclick="startRandom50()">
+                    <i class="fas fa-random"></i> Случайные 50
+                </button>
+                <button class="btn btn-primary" onclick="startRandom100()">
+                    <i class="fas fa-random"></i> Случайные 100
+                </button>
+                <button class="btn btn-warning" onclick="toggleSidePanel()">
+                    <i class="fas fa-history"></i> История
+                </button>
+            </div>
+
+            <div class="menu-grid" id="stages-container"></div>
+        </div>
+
+        <div id="quiz-screen" class="hidden">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                <div class="timer" id="timer">60:00</div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-primary" onclick="showHint()">
+                        <i class="fas fa-lightbulb"></i> Подсказка
+                    </button>
+                    <button class="btn btn-danger" onclick="confirmFinish()">
+                        <i class="fas fa-check-circle"></i> Завершить
+                    </button>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <div id="progress-text" style="text-align: center; margin-top: 8px;"></div>
+            </div>
+
+            <div id="question-counter" style="margin-bottom: 15px;"></div>
+
+            <div class="numbers-nav" id="numbers-nav"></div>
+
+            <div class="question-text" id="question-text">
+                <div id="q-text"></div>
+            </div>
+
+            <div id="options-box"></div>
+
+            <div style="display: flex; gap: 15px; margin-top: 25px;">
+                <button id="prev-btn" class="btn" style="flex: 1; background: var(--border);" onclick="prevQuestion()">
+                    <i class="fas fa-arrow-left"></i> Назад
+                </button>
+                <button id="next-btn" class="btn btn-primary" style="flex: 1;" onclick="nextQuestion()">
+                    Далее <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="result-screen" class="hidden" style="text-align: center;">
+            <div class="grade-badge" id="grade-display"></div>
+            <div class="stats-box">
+                <p id="stats-display" style="font-size: 1.5rem; font-weight: 600; margin-bottom: 15px;"></p>
+                <p id="details-display"></p>
+            </div>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-primary" onclick="location.reload()">
+                    <i class="fas fa-home"></i> В меню
+                </button>
+                <button class="btn" style="background: var(--success); color: white;" onclick="shareResult()">
+                    <i class="fas fa-share-alt"></i> Поделиться
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidePanel()"></div>
+    <div class="side-panel" id="side-panel">
+        <button onclick="toggleSidePanel()" style="float: right; background: none; border: none; font-size: 24px; cursor: pointer; color: inherit;">✕</button>
+        <h2><i class="fas fa-chart-simple"></i> История результатов</h2>
+        <div id="results-history" style="max-height: 300px; overflow-y: auto; margin: 20px 0;"></div>
+        <button class="btn btn-danger" onclick="clearResultsOnly()" style="width: 100%;">
+            <i class="fas fa-trash"></i> Очистить историю
+        </button>
+        
+        <hr style="margin: 20px 0; border-color: var(--border);">
+        
+        <h2><i class="fas fa-exclamation-triangle"></i> Ошибки</h2>
+        <div id="errors-history" style="max-height: 300px; overflow-y: auto; margin: 20px 0;"></div>
+        <button class="btn btn-danger" onclick="clearErrorsOnly()" style="width: 100%;">
+            <i class="fas fa-trash"></i> Очистить ошибки
+        </button>
+    </div>
+
+    <script>
+        // ============= ВСЕ ВОПРОСЫ =============
+        const allQuestionsRawData = [
+            ["Какой из типов лингвистических анализаторов изучает структуру слов?", "Морфологический анализатор", "Синтаксический анализатор", "Семантический анализатор", "Прагматический анализатор"],
+            ["На какие типы можно разделить лингвистический анализатор для его изучения?", "Морфологический, Синтаксический, Семантический", "Морфологический, Систематический, Фундаментальный", "Синтаксический, Пунктуационный, Метаморфемный", "Семантический, Фонетический, Пунктуационный"],
+            ["Что такое NLP?", "Технология, обеспечивающая связь между компьютером и человеком с использованием естественного языка", "Преобразование аналоговых природных сигналов в цифровые сигналы для понимания компьютером", "Технология осуществления формирования естественной речи", "Технология выделения речи и голосовых сигналов диктора"],
+            ["Что такое анализ предложений в технологии обработки естественного языка?", "Процесс изучения грамматической, синтаксической и семантической структуры предложения.", "Процесс разделения текста на части", "Метод обнаружения звукового сигнала с помощью компьютера", "Разделение слов в предложении"],
+            ["Какой из перечисленных ниже вариантов ответов включает в себя анализ предложения?", "лемматизатор, морфоанализатор, стеммер, парсер и орфокорректор", "лемматизатор, синтезатор, стеммер, аналоговый цифровой преобразователь", "аналоговый цифровой преобразователь, лемматизатор, морфоанализатор", "лемматизатор, морфоанализатор, стеммер, парсер и орфокорректор, дискретизатор"],
+            ["Какой первый этап морфологического анализа?", "Токенизация", "Стемминг", "Лемматизация", "Синтаксический анализ"],
+            ["Какие части речи можно определить в синтаксическом анализе?", "Основные и второстепенные части", "Синонимы и антонимы", "Фразеологические обороты", "Омонимы"],
+            ["К какому анализу относится определение типов предложений?", "Синтаксический анализ", "Морфологический анализ", "Семантический анализ", "Стемминг"],
+            ["В рамках какого анализа рассматриваются виды синонимов?", "Семантический анализ", "Морфологический анализ", "Синтаксический анализ", "Лемматизация"],
+            ["Как определяются словосочетания в морфологическом анализе?", "Анализ словосочетания", "Определение омонимов через анализ", "Найти синонимы", "Разделение частей предложения"],
+            ["Найдите строку, в которой правильно указаны этапы NLP?", "Морфологический анализ -> Синтаксический анализ -> Семантический анализ", "Семантический анализ -> Морфологический анализ -> Синтаксический анализ", "Синтаксический анализ -> Стемминг -> Лемматизация", "Стемминг -> Лемматизация -> Токенизация"],
+            ["Как называется первый этап NLP?", "Морфологический анализ", "Семантический анализ", "Нумизматический анализ", "Синтаксический анализ"],
+            ["Какова одна из основных задач синтаксического анализа?", "Определение структуры предложения и его частей", "Разделение текста на части", "Найти лексическое значение слов", "Определение синонимов"],
+            ["Что означает процесс стемминга?", "Процесс приведения слова к основной или корневой форме", "Процесс добавления дополнительных значений к слову", "Процесс обработки знаков препинания в составе предложения", "Форма слова в словаре"],
+            ["Найдите строку, в которой правильно приведен процесс лемматизации.", "Приведение слов к лексической форме на основе языковых правил.", "Процесс, основанный только на удалении окончания слова без учета языковых правил.", "Процесс разделения текста на небольшие части", "Формирование предложения в виде небольших словосочетаний"],
+            ["Выберите вариант ответа в котором приведен процесс токенизации?", "Процесс разделения текста на небольшие части", "На основе языковых правил привести слова к лексической форме.", "Процесс, основанный на удалении только окончания слова без учета языковых правил.", "Процесс определения частей речи"],
+            ["Какие библиотеки используются для проведения морфологического анализа?", "NLTK, SpaCy, TextBlob", "OpenCV, SpaCV, NLTK", "Pandas, NLTK, Tkinter", "Scipy, GSTT, NSP"],
+            ["Что означает процесс тегирования POST?", "Определение грамматической роли слов и назначение соответствующих тегов им.", "Процесс разделения текста на небольшие единицы", "На основе языковых правил привести слова к лексической форме.", "Процесс, основанный только на удалении окончания слова без учета языковых правил"],
+            ["Какие предложения определяются в синтаксическом анализе?", "Упрощенные и сложные предложения", "Эмоциональные и нейтральные предложения", "Семантически связанные предложения", "Предложения с омонимией"],
+            ["К какому виду анализа относится анализ сложных предложений?", "Синтаксический анализ", "Семантический анализ", "Морфологический анализ", "Фразеологический анализ"],
+            ["На чём основаны алгоритмы синтаксического анализа?", "Грамматические правила и связи", "Морфологические особенности слова", "Лексическое значение текста", "Алгоритмы распознавания эмоций"],
+            ["После какого этапа выполняется синтаксический анализ?", "После морфологического анализа", "Перед семантическим анализом", "После токенизации", "После эмоционального анализа"],
+            ["Что означает понятие парсер?", "это используется для выполнения задачи анализа.", "это используется для контроля общих значений.", "означает, что значения выбраны хорошо.", "определяет сходство между различными отношениями."],
+            ["Кем была предложена первая математическая модель грамматики?", "Ноам Хомский", "Алан Тьюринг", "Джон Маккарти", "Марвин Минский"],
+            ["Что такое грамматика Хомского?", "Иерархия грамматик для математического описания языков", "Только метод эмоционального анализа естественного языка", "Алгоритм анализа эмоций", "Выполнение морфологической токенизации"],
+            ["Какие синтаксические анализаторы используются сегодня?", "PetitParser, Etap-3, Bison", "Pytorch, tensorflow", "Etap-3, Scapy", "Bison, Scapy, Numpy"],
+            ["Что такое семантический анализ?", "Процесс извлечения смысла из текста", "Процесс определения корней слов в тексте", "Процесс определения эмоций на основе знаков препинания", "Использование различных символов и процесс их анализа"],
+            ["Какова основная цель лексического анализа?", "Разделение текста на слова и определение лексического значения слов.", "Определение грамматической функции слов", "Определение синтаксических отношений между частями предложения", "Анализ чувств"],
+            ["Что означает лексическая семантика?", "Первый этап семантического анализа, который включает проверку значения конкретных слов.", "Определение небольших частей предложения.", "Определяет знаки препинания в тексте и анализирует их.", "Изучает синтаксическую структуру текста"],
+            ["Какая концепция считается основной в лексической семантике?", "Синонимы и антонимы", "Придаточная часть предложения", "Лексические омонимы", "Морфологическое изменение слова"],
+            ["Что такое данные?", "Необработанная статистика, наблюдения и факты", "Обработанные данные, которые придают смысл или контекст.", "Набор знаний", "Новые созданные знания"],
+            ["Информация - это?", "Обработанные данные, которые придают смысл или контекст.", "Необработанная статистика, наблюдения и факты", "Анализ данных для принятия решения", "Процесс логических выводов"],
+            ["Что такое знание?", "Способность делать новые выводы на основе изученного опыта и данных", "Только память для хранения данных", "Только информация, прочитанная из книг", "Набор случайных данных."],
+            ["Какова правильная последовательность генерации знаний?", "Данные → Информация → Знание", "Информация → Знание → Данные", "Знание → Информация → Данные", "Информация → Данные → Знание"],
+            ["Какие виды знаний существуют?", "Декларативные, процессуальные, эвристические, структурные, мета-знания", "Декларативные, продукционные, эвристические, структурные, мета-знания", "Декларативные, процессуальные, эвристические, семантические, метазнания", "Декларативный, процедурный, фрейм, структурный, мета-знание"],
+            ["Для чего интеллектуальный анализ данных (Data mining) используется при извлечении знаний?", "Для автоматического обнаружения данных из больших объемов данных", "Только для сбора данных", "Управление процессом интервью с экспертом", "Анализировать правила"],
+            ["Что такое процессуальные знания?", "Действия, основанные на использовании фактов", "Анализ данных", "Управление процессом обучения", "Синтез знаний"],
+            ["Что такое метазнание?", "Знание о знании", "Применение фактов", "Связи между понятиями", "Только теоретические знания"],
+            ["Какова основная функция 'Интеллектуального анализа данных' (Data mining)?", "Открытие новых знаний", "Обработка текстовых данных", "Создание правил онтологии", "Автоматизация принятия решений"],
+            ["В какой области используется теорема Байеса?", "Решение неопределенности в теории вероятностей", "Анализ данных", "Создание отраслевых знаний", "Механизм вывода заключений"],
+            ["Как работает модель семантической сети?", "Выражает отношения между понятиями", "Только делает выводы", "Визуализирует данные", "Анализирует факты"],
+            ["Как представлена логическая модель?", "Факты, отношения и выводы", "Связи между данными", "Извлечение знаний", "Правила вывода"],
+            ["Что хранится в фреймовой модели?", "Объекты и атрибуты", "Только правила", "Отношения между понятиями", "Механизмы вывода заключений"],
+            ["Выберите из представленных ниже вариантов модели представления знаний?", "Продукционный, логический, семантический, фрейм.", "Процессуальный, эвристический, семантический, фрейм", "Продукционный, эвристический, структурный, фрейм", "Процессуальный, логический, структурный, фрейм."],
+            ["Что делается при извлечении знаний?", "Форматирование и нормализация данных", "Вывод из данных", "Построение и моделирование знаний", "Представление данных в графической форме"],
+            ["Что такое база знаний?", "Результаты, полученные от различных специалистов в определенной области", "Эффективное хранение, управление и представление данных", "Только писать книги и статьи", "Только сбор технической и статистической информации"],
+            ["Что включает в себя база знаний?", "Факты и правила", "Только таблицы данных", "Текстовая и графическая информация", "Только мнения экспертов"],
+            ["Что можно сделать для повышения эффективности базы знаний?", "Оптимизация знаний и удаление избыточной информации", "Добавление графического интерфейса к правилам", "Только применение статистических алгоритмов", "Введение лингвистических элементов"],
+            ["Каковы основные компоненты экспертных систем?", "База знаний, механизм вывода, пользовательский интерфейс", "База данных, сетевой модуль, сенсоры", "Модуль статистического анализа, графический интерфейс, аналитические инструменты", "Учебные алгоритмы, текстовый редактор, технические модули"],
+            ["Какие методы используются для извлечения знаний?", "Машинное обучение, обработка естественного языка и анализ других данных", "Только статистический и математический анализ", "Сбор данных и работа только с цифровыми данными", "Только изучение пользователей через опросы"],
+            ["Какие правила используются в Экспертных системах?", "\"Если-то\" (if-then) правила", "Правила графического анализа", "Представление знаний", "Правила семантического языка"],
+            ["Как работает Продукционная модель", "Использует набор правил", "Выражает отношения между понятиями", "Только делает выводы", "Связи между данными"],
+            ["На чем основывается теорема Байеса?", "Вероятность и условная вероятность", "Официальная логика", "Извлечение данных", "Кластеризация"],
+            ["В какой модели используется условие \"Если-то\" (if-then)?", "Продукционной", "Логической", "Семантической сети", "Фрейм"],
+            ["Какую функцию выполняет пользовательский интерфейс в экспертных системах?", "Обеспечивает взаимодействие между пользователем и системой.", "Оптимизирует знания в базе данных", "Настраивает алгоритмы в системе", "Ограничивает доступ к базе знаний"],
+            ["Как представляются знания в экспертных системах?", "Правила, факты или семантические сети в виде", "В виде цифровых таблиц", "Статичные тексты", "С помощью сложных графических визуализаций"],
+            ["Каково основное преимущество использования экспертных систем?", "Повышение эффективности за счет автоматизации экспертных знаний", "Осуществление мониторинга в реальном времени", "Быстрое восстановление сетевых подключений", "Сбор статистических данных"],
+            ["Основная часть Экспертной системы?", "Механизм вывода заключений", "Генерация новых знаний", "Определение связей между понятиями", "Анализ данных"],
+            ["Как работают Экспертные системы?", "Принимает решение, используя базу знаний", "Хранит только цифровые данные", "Создает только отображающую систему", "Генерирует новые знания"],
+            ["Для решения каких проблем используются Экспертные системы?", "Сложные и многослойные задачи", "Только простые задачи", "Генерация новых знаний", "Только классификация и кластеризация"],
+            ["Для чего используется искусственный нейрон?", "Принятие входных значений и вычисление выходных значений", "Только сохранять входные значения", "Шифрование информации", "Создание игровых программ"],
+            ["От какой биологической системы вдохновлена нейронная сеть?", "Нервная система", "Сердечно-сосудистая система", "Пищеварительная система", "Кровеносная система"],
+            ["Какова основная функция нейрона?", "Принятие, обработка и передача информации", "Хранение информации", "Шифрование выходного значения", "Подключение информации к другой системе"],
+            ["На каком слое нейронной сети получается результат?", "Выходной слой", "Входной слой", "Скрытый слой", "Слой тяжести"],
+            ["С помощью чего увеличиваются значения в нейронной сети?", "При помощи весов", "При помощи выходных", "С помощью значения активации", "С помощью смещения"],
+            ["Какую задачу выполняет самый простой перцептрон?", "Бинарная классификация", "Деление векторов", "Программирование игр", "Непрерывное вычисление"],
+            ["Какая из следующих функций используются для активации нейронных сетей?", "Сигмоида", "Логарифм", "Вычитание", "Конкатенация"],
+            ["Какие операции выполняются над входными значениями нейрона?", "Математические комбинации", "Только сумма чисел", "Только умножение", "измерение масштаба ошибки"],
+            ["Какие операции нейрон выполняет над входными значениями и весами?", "Умножение и сложение", "Линейное вычисление", "Векторное исчисление", "Определение активности"],
+            ["В каком процессе используется функция активации?", "Определение активности нейронов", "Установка входных значений", "При расчёте выходного значения", "Упорядочивание синапсов"],
+            ["Какова архитектура искусственной нейронной сети?", "Состоит из входного, скрытого и выходного слоя", "Только из входного и скрытого слоев", "Работает без выходного слоя", "Всегда состоит из четырех слоев"],
+            ["Какой алгоритм используется для изучения нейронных сетей?", "Алгоритм градиентного спуска", "Алгоритм дискретизации", "Линейный алгоритм", "Алгоритм разделения"],
+            ["Кто и когда впервые изучил нейронные сети?", "Уоррен Маккалох и Уолтер Питс, 1943 год", "Алан Тьюринг, 1945 году", "Джон фон Нейман, в 1956 году", "Артур Самуэль, в 1960 году"],
+            ["Что такое нейронная сеть?", "Система нескольких взаимосвязанных нейронов", "Математический инструмент", "Система хранения информации", "Средство связи"],
+            ["Какую функцию выполняют 'веса' (weights) нейрона?", "Измеряет влияние входных значений", "Сохраняет входные значения", "Определяет выходные значения", "Блокирует нейрон"],
+            ["На каком алгоритме основан искусственный нейрон?", "Математические комбинации и функции", "Линейное измерение", "Сортировка данных", "Векторный анализ"],
+            ["Как можно определить выходное значение нейрона?", "С помощью функции активации", "С помощью активности", "Через линейную регрессию", "С помощью суммы весов"],
+            ["Что из приведенного ниже является элементом искусственного нейрона?", "Смещение и функция активации", "Синапс и дендрит", "Только логарифм и softmax", "Компьютер и процессор"],
+            ["Какова самая простая модель персептрона?", "Бинарная нейронная модель", "Многослойная нейронная модель", "Непрерывная нейронная модель", "Сеть softmax"],
+            ["Одним из основных компонентов искусственных нейронов является что?", "Дендрит и аксон", "Синапс и клетка", "Векторы и значения", "Информация и блок"],
+            ["Какой слой дает окончательный результат нейронной сети?", "Выходной слой", "Скрытый слой", "Входной слой", "Слой активации"],
+            ["В каких областях используются нейронные сети?", "Машинное обучение и искусственный интеллект", "Анализ связи", "Хранение электронных устройств", "Решение математических задач"],
+            ["Какое значение вычисляет функция активации нейрона?", "Выходное значение", "Входное значение", "Тяжесть", "Синапсы"],
+            ["В чем основное преимущество нейронных сетей?", "Способность к самообучению и адаптации", "Быстрое сохранение записей", "Работа с различной информацией", "Выделение больших данных"],
+            ["Что такое смещение и какова его функция в нейронных сетях?", "Адаптация активации нейронов и вычислительных процессов", "Увеличение выходного значения", "Сбор входных данных", "Отключение функции активации"],
+            ["В какие годы появилось понятие интеллектуального анализа данных?", "1950-1970 годы", "1942-1949 годы", "1927-1937 годы", "1930-1940 годы"],
+            ["В каком году появился Термин «Data mining» (извлечение данных)?", "1990-2000 годы", "1950-1970 годы", "1942-1949 годы", "1927-1937 годы"],
+            ["Какова основная цель предварительной обработки данных (Data processing)?", "Подготовка данных для интеллектуального анализа", "Только очистка данных", "Только устранение неопределенностей", "Только анализировать данные"],
+            ["Какие этапы включает в себя процесс предварительной обработки данных (Data processing)?", "Всё правильно", "Подготовка данных", "Очистка данных", "Понимание данных"],
+            ["Какие этапы выполняет понимание данных (data understanding)?", "Всё правильно", "Распознавание набора данных.", "Выделение его характеристик.", "Анализ структуры данных."],
+            ["Какой ответ правильно указывает виды подготовки данных?", "Все ответы правильные", "Объединение", "Сокращение данных (учебная выборка)", "Уменьшение размеров"],
+            ["Что означает кластеризация?", "Нахождение группы объектов по признакам.", "Нахождение расстояния", "Нахождение объема объекта", "Нахождение высоты объекта"],
+            ["Какова основная цель искусственного интеллекта?", "Моделирование человеческого интеллекта", "Автоматизация данных", "Создание роботов", "Развитие языков программирования"],
+            ["Основной компонент нейронной сети - это что?", "Нейрон", "Вектор", "Градиент", "Матрица"],
+            ["Каков будет результат если увеличить количество слоев в нейронной сети?", "Модели становятся более сложными", "Скорость моделей увеличивается", "Точность моделей снижается", "Модели теряют данные"],
+            ["Какова задача функции активации?", "Преобразование выходных значений в линейную форму", "Классификация введенной информации", "Изменение весов нейронов", "Уничтожение нейронов"],
+            ["Очистка данных или предварительная обработка данных (data cleaning) - это ?", "Процесс приведения набора данных в чистое и надежное состояние для анализа и моделирования.", "Классификация введенной информации", "Изменение весов нейронов", "Модели теряют данные"],
+            ["Какой этап обработки данных представляет собой использование режима среднего/медианы?", "Управление отсутствующими значениями", "Это означает, что значения выбраны хорошо.", "Процесс расчета значений", "Преобразует все значения в ноль"],
+            ["Дискретизация значений - это?", "Процесс преобразования непрерывного атрибута в порядковый атрибут.", "Это означает, что значения выбраны хорошо.", "Преобразует все значения в ноль", "Точность моделей снижается"],
+            ["Естественная группировка данных (Data binning) - это?", "Уменьшение влияния небольших ошибок наблюдения и упрощение анализа больших наборов данных.", "Процесс преобразования непрерывного атрибута в порядковый атрибут", "Это означает, что значения выбраны хорошо.", "Преобразует все значения в ноль"],
+            ["Связывание с равной частотой (биннинг) - это?", "Выделенные классы имеют одинаковую частоту.", "Процесс преобразования непрерывного атрибута в порядковый атрибут", "Это означает, что значения выбраны хорошо.", "Преобразует все значения в ноль."],
+            ["Размещение в равном масштабе - это?", "Масштаб классов должен быть равным друг другу.", "Процесс преобразования непрерывного атрибута в порядковый атрибут", "Это означает, что значения выбраны хорошо.", "Преобразует все значения в ноль"],
+            ["Сжатие данных (data compression) - это?", "Процесс, используемый для уменьшения объема данных", "Равность масштаба классов друг другу.", "Процесс преобразования непрерывного атрибута в порядковый атрибут.", "Выделенные классы имеют одинаковую частоту."],
+            ["Алгоритмы поиска данных (Data search) - это?", "Процесс поиска и нахождения необходимой информации", "Процесс, используемый для уменьшения объема данных", "Равность масштаба классов друг другу.", "Выделенные классы имеют одинаковую частоту."],
+            ["Линейный поиск - это?", "Алгоритм последовательного поиска по каждому элементу списка до тех пор, пока не будет найден необходимый элемент.", "Процесс преобразования непрерывного атрибута в порядковый атрибут.", "Это означает, что значения выбраны правильно.", "Преобразует все значения в ноль"],
+            ["В чем заключается общая характеристика алгоритмов поиска без информации?", "Использует только информацию о целевом узле.", "Заранее рассчитывает своё направление.", "На графике всегда находит самый короткий путь.", "Поиск работает только на самых глубоких узлах."],
+            ["Какую структуру данных использует поиск в ширину (BFS)?", "Очередь(Queue)", "Стек(Stack)", "Связанный список (Linked List)", "Таблица"],
+            ["Какой недостаток имеет алгоритм поиска в глубину (Depth first search или DFS)?", "Может столкнуться с проблемой при работе на бесконечной глубине.", "Требует много памяти.", "Только работает на графиках, не работает на деревьях.", "Всегда находит самый короткий путь"],
+            ["Какое преимущество имеет поиск с ограниченной глубиной (DLS)?", "Избегает погружения в бездну.", "Всегда находит решение.", "Работает только по ширине.", "Использует структуру очереди."],
+            ["Каково основное преимущество двустороннего поиска (Bidirectional Search)?", "Скорость поиска будет высокой.", "На каждом этапе проверяется только одно направление.", "Использует значение ошибки для нахождения самого короткого пути.", "Работает только в структуре дерева"],
+            ["Основное преимущество поиска с ограниченной глубиной?", "Избегает бесконечного поиска на границе глубины.", "Всегда находит самый короткий путь.", "На графике все узлы рассматриваются за один раз.", "Не использует значение ошибки."],
+            ["Какой тип машинного обучения использует размеченные данные?", "Обучение с учителем", "Укреплённое обучение", "Обучение без учителя", "Нормализация"],
+            ["Обучение без учителя использует какие данные?", "Необработанные данные (непомеченные)", "Указанные данные (с метками)", "Изменённые данные", "Все ответы правильные"],
+            ["В каких областях широко применяется метод укрепленного обучения?", "Программное обеспечение для игр и робототехника", "Линейная регрессия", "Классифицировать", "Анализ графических данных"],
+            ["Для чего используется нормализация?", "Для перевода значений величин в одну шкалу", "Для упорядочивания данных", "Для классификации набора данных", "Чтобы сократить время обучения"],
+            ["К какому диапазону через нормализацию приводятся значения?", "0-1", "−∞,+∞", "-1,1", "любое значение"],
+            ["Рассчитайте нормализованное значение следующей информации: Xi=5, Xmin=1, Xmax=10", "0,444", "0,51", "0,35", "0,28"],
+            ["Какова основная цель нормализации?", "Уменьшение различий между входными значениями", "Увеличение различий между переменными в Dataset", "Всегда находить самый короткий путь", "Приведение данных в неопределенное состояние"],
+            ["Что обозначает μ в процессе стандартизации?", "Среднее значение", "Максимальное значение", "Минимальное значение", "Среднеквадратическое отклонение"],
+            ["Какое значение имеет смещение (свободный член)?", "Свободный параметр, добавляемый к функции, выражает (свободный член).", "Увеличивает количество данных", "Увеличивает скорость градиента", "Минимальное значение"],
+            ["Какую роль играет шум в модели?", "Вызывает естественные ошибки", "Увеличивает объем измененных данных", "Нормализует данные", "Помогает адаптации данных"],
+            ["С какой проблемой связано Variance?", "Чрезмерная адаптация данных", "Потеря изменённых значений", "С увеличением уровня прогнозирования модели", "С увеличением градиентов"],
+            ["В чем заключается основная задача среднеквадратичной ошибки (Mean Squared Error MSE)?", "Обнаружение ошибки", "Чрезмерная адаптация данных", "Обеспечение утраты измененных значений", "Повышение уровня прогнозирования модели"],
+            ["Для решения каких задач в основном используется Confusion Matrix (Матрица путаницы)?", "Используется для решения задач классификации.", "Чрезмерная адаптация данных", "Обеспечение утраты измененных значений", "Повышение уровня прогнозирования модели"],
+            ["Что означает истинно положительный (True Positive TP)?", "Количество случаев, когда модель правильно предсказала положительный класс", "Количество ошибок", "Обеспечение утраты измененных значений", "Повышение уровня прогнозирования модели"],
+            ["Что означает истинно отрицательные (True Negative TN)?", "Количество случаев, когда модель правильно предсказала отрицательный класс.", "Количество случаев, когда модель правильно предсказала положительный класс.", "Обеспечение утраты измененных значений", "Повышение уровня прогнозирования модели"],
+            ["Что означает ложноположительные результаты (False Positive FP)?", "Количество случаев, когда модель неправильно предсказала положительный класс.", "Количество случаев, когда модель правильно предсказала отрицательный класс.", "Количество случаев, когда модель правильно предсказала положительный класс.", "Повышение уровня прогнозирования модели"],
+            ["Неправильные отрицательные (False Negative FN) что означают?", "Количество случаев, когда модель неправильно предсказала отрицательный класс.", "Количество случаев, когда модель неправильно предсказала положительный класс.", "Количество случаев, когда модель правильно предсказала отрицательный класс.", "Количество случаев, когда модель правильно предсказала положительный класс"],
+            ["Вычисление точности - это?", "Насколько точны положительные прогнозы модели", "Количество случаев, когда модель правильно предсказала отрицательный класс.", "Повышение уровня прогнозирования модели", "Количество случаев, когда модель неправильно предсказала положительный класс."],
+            ["В чем заключается основная задача алгоритма градиентного спуска?", "Найти минимальное значение функции", "Доведение параметров до максимального значения", "Найти максимальное значение функции", "Увеличение наклона"],
+            ["Когда используется алгоритм градиентного спуска для пакетов?", "При одновременном запросе использования всех данных.", "Когда набор данных небольшой", "Использование эталонных образцов", "При использовании размера мини-пакета"],
+            ["Какие недостатки существуют у метода градиентного спуска с полным пакетом?", "Требует очень много памяти", "Выбирает случайные образцы", "Обновление параметров требует времени", "Не подходит для небольшого набора данных"],
+            ["Что означает b в Mini-Batch Gradient Descent?", "Количество образцов в наборе", "Глобальный минимальный", "Оптимальные значения параметров", "Скорость обучения"],
+            ["Какова роль функции потерь в машинном обучении?", "Оценка ошибок модели", "Сохранение памяти", "Оптимизация данных", "Повышение точности модели"],
+            ["Когда используется стохастический градиентный спуск?", "Очень большой набор данных", "При каждом повторении использовать все данные", "Когда требуется точность в полном наборе данных", "При случайном задании параметров"],
+            ["Какова основная задача нормализации?", "Приведение данных к диапазону от 0 до 1", "Централизация данных", "Вычисление дисперсии данных", "Увеличение значений параметров"],
+            ["Какие существуют виды градиентного спуска?", "Batch, Стохастический, Мини-batch", "Глобальный, Локальный, Малый набор", "Оптимизация, Нормализация, Стандартизация", "Квадратичный, Абсолютный, Градиент"],
+            ["Какие преимущества имеет алгоритм Mini-Batch Gradient Descent?", "Сочетает в себе хорошие стороны стохастического и Batch градиента.", "Выбирает случайные образцы", "Требует минимального объема памяти", "Требуется одноразовая полная обработка данных"],
+            ["Как работает алгоритм стохастического градиентного спуска?", "В каждой итерации используется один случайный образец.", "Работает с небольшими наборами данных", "Рассчитывает все образцы одновременно.", "На каждой итерации используется вся информация."],
+            ["При обучении учителей какие данные используют машины?", "Размеченные данные", "Данные, основанные на шаге изучения", "Только данные без меток", "Случайно выбранные данные"],
+            ["Для прогнозирования значений какого типа используется линейная регрессия?", "Непрерывные значения", "Категориальные значения", "Дискретные значения", "Номинальные значения"],
+            ["Какую основную цель выполняет функция значений в линейной регрессии?", "Минимизация ошибок функции", "На каждой итерации максимизировать значения", "Рандомизация параметров", "Увеличение случайных значений"],
+            ["Какова основная цель градиентного спуска?", "Минимизация функции ошибки", "Нормализация датасета", "Увеличение случайных ошибок", "Доведение используемых коэффициентов до максимального значения"],
+            ["Как определяются значения градиента и смещения в линейной регрессии?", "Во время итерации обновляется.", "На каждой итерации задаются новые случайные значения.", "Основывается на максимальных значениях данных", "Выбирается случайно и не изменяется"],
+            ["Основная задача полиномиальной регрессии заключается в чем?", "Адаптация хаотичных и сложных входных значений", "Представление линейных данных", "Определение вероятностных значений с помощью сигмоидной функции", "Нормализация датасета"],
+            ["Какова основная задача логистической регрессии?", "Определение вероятности входных значений в диапазоне (0 и 1)", "Минимизация функции ошибки", "Минимизация значений линейного прогноза", "Представление линейных данных"],
+            ["Значения сигмоидной функции находятся в каком диапазоне?", "[0, 1]", "[0, ∞)", "[-1, 1]", "[-1,0]"],
+            ["Какой степени полиномиальная регрессия выражает сложную модель?", "2 и более уровней", "Степень, равная нулю", "1-й уровень", "Всё правильно"],
+            ["Алгоритм K-NN широко используется для решения каких проблем?", "Классифицировать", "Регрессия", "Обучение с учителем", "Классификация"],
+            ["Как классифицируются тестовые данные в алгоритме K-NN?", "Через самых близких соседей", "Через средние значения", "На основе валового совокупного объема", "Каждая информация сама по себе"],
+            ["Как называется граница решения в алгоритме SVM?", "Гиперплоскость", "Линейное уравнение", "Набор данных", "Порог приема"],
+            ["Алгоритм SVM используется для решения какой проблемы?", "Классификация", "Регрессия", "Классифицировать", "Прогнозирование скорости"],
+            ["Для чего используется евклидово расстояние в алгоритме K-NN?", "Расчет расстояния между данными", "Рассчитать расстояние от каждой точки до самой себя.", "Оценка стоимости класса", "Уравнять все расстояния"],
+            ["В алгоритме SVM с помощью гиперплоскости что определяется?", "Граница класса", "Новые тестовые точки", "Тестирование других алгоритмов", "Расстояние между точками"],
+            ["Что такое регуляризация?", "Способ добавления дополнительных данных для предотвращения переобучения модели.", "Добавление новых функций для уменьшения ошибки модели.", "Для оптимизации модели работать только с неизменными характеристиками.", "Метод, используемый для определения класса модели."],
+            ["Каким методом является Ridge регрессия?", "Для уменьшения сложности модели используется L2-регуляризация.", "При оптимизации модели используется только одна переменная.", "Приравнивает веса признаков к нулю.", "Для уменьшения общей ошибки используется только полиномиальная регрессия."],
+            ["Каково преимущество регрессии Лассо?", "Может приравнять характеристики к нулю.", "Помогает только сократить коэффициенты.", "Уменьшает сложность модели за счет добавления штрафа.", "Сохраняет все характеристики модели."],
+            ["Для чего используется алгоритм градиентного спуска?", "Функция помогает минимизировать затраты.", "Только для чтения тестовых данных.", "Автоматически выбирает параметры модели.", "Используется для объединения прогнозов других моделей."],
+            ["Что такое ансамблевое обучение?", "Достижение улучшения за счет объединения прогнозов нескольких моделей.", "Связывать одну модель только с другой моделью.", "Только разработка и прогнозирование одной модели.", "Создание новых учебных материалов."],
+            ["Как работает функция среднеквадратичной ошибки (MSE)?", "Возводит ошибки в квадрат и вычисляет их среднее значение.", "Используется для определения класса модели.", "Рассчитывает взаимосвязь между характеристиками модели.", "Оценивает модель только по классам."],
+            ["Как выбираются начальные центры кластеров?", "Случайным образом выбирается", "Выбирается в качестве среднего значения", "Выбирается только одна точка", "Все точки принимаются за центр."],
+            ["Какой тип алгоритма кластеризации K-Means?", "Обучение без учителя", "Обучение с учителем", "Алгоритм регрессии", "Алгоритм кластеризации"],
+            ["Какова основная функция Эвклидова расстояния?", "Измерение расстояния между точками данных", "Разделение классов", "Обучение модели", "Вычисление ошибки"],
+            ["Одна из правильных задач алгоритма кластеризации K-Means?", "Найти центральные точки K", "Выбор новых кластеров", "Обучение модели", "Создание меток класса"],
+            ["Алгоритм опорных векторов (SVM) в каких случаях используется?", "Определение границы решения между классами", "Только решение задач регрессии", "Укрупнение данных", "Выбор подходов между классами"],
+            ["Что такое глубокое обучение?", "Машинное обучение на основе искусственных нейронных сетей", "Обучение работе автоматических систем управления", "Изучение только однослойных нейронных сетей", "Анализ базы данных"],
+            ["Из каких слоев состоят нейронные сети, используемые в алгоритмах глубокого обучения?", "Входной, скрытый, выходной слои", "Только входные слои", "Общий класс и входные слои", "Слои класса и выходные слои"],
+            ["Как называются функции между слоями в прямой нейронной сети?", "Функции активации", "Линейные функции", "Функции анализа данных", "Функции прогнозирования"],
+            ["Что такое функция активации в нейронных сетях?", "Функция адаптации входных данных к необходимому выходу", "Функция передачи данных на выходной слой", "Для обучения модели необходимо рассчитать параметры.", "Функция настройки и проверки модели"],
+            ["Глубина\" глубоких нейронных сетей что означает?", "Количество слоев в сети", "Результаты модели", "Количество параметров в модели", "Размеры точек данных"],
+            ["Какой слой в прямой нейронной сети принимает входные данные?", "Входной слой", "Выходной слой", "Скрытый слой", "Слой активации"],
+            ["Какой метод использует нейронная сеть для обучения в глубоком обучении?", "Метод обратного распространения", "Основной метод анализа", "Разделение на классы", "Классификация и прогнозирование"],
+            ["Какова основная цель многослойного перцептрона (МСП)?", "Оптимизация классов в объектах", "Анализ данных", "Уменьшение изменения модели", "Определение изображения"],
+            ["Что такое алгоритм обратного распространения ошибки (BP)?", "Алгоритм оптимизации на основе градиента", "Алгоритм исправления данных", "Алгоритм корректировки нейронной сети", "Найти связь между входом и выходом"],
+            ["Основное преимущество функции ReLU (Rectified Linear Unit) в чем?", "Предотвращение исчезновения градиента", "Уменьшение малых значений", "Анализ изменения входа", "Проверка нелинейных процессов"],
+            ["Какая особенность Leaky ReLU?", "Иметь небольшой уклон для нулевых значений", "Для положительных значений использовать линейную функцию", "Только для положительных значений работает.", "Приводит к исчезновению градиента"],
+            ["Для чего используется функция softmax?", "Классификация данных для", "Анализ градиента", "Чтобы исправить нейронную сеть", "Для оптимизации модели"],
+            ["Какие значения принимает функция Softmax?", "вероятности, находящиеся в интервале (0, 1)", "Положительные и отрицательные значения", "Вычисление градиентов", "Нахождение связей между нейронами"],
+            ["Как работает алгоритм продвижения вперед?", "Вычисляет выходные значения нейронов каждого слоя и передает их на следующий слой.", "Оптимизирует параметры в скрытых слоях.", "Помогает минимизировать функцию стоимости.", "Нейронную сеть обучают только до последнего слоя."],
+            ["Какие вычисления выполняются в алгоритме обратного распространения?", "Влияние значений коэффициентов нейронов на функцию в каждом слое.", "Оптимизация выходного значения скрытого слоя.", "Параметры активации нейронной сети обновляются.", "Функцию стоимости вычислять только на последнем слое."],
+            ["Архитектура CNN полностью показана в ответе?", "Сверточные слои, ReLU, объединяющие слои, полностью связанные слои.", "Только сверточные слои.", "Только полностью связанные слои.", "Только функции активации."],
+            ["Что такое искусственный интеллект?", "Набор умных машин, которые могут управлять собой, думать и принимать решения как человек.", "Набор роботов, способных двигаться как человек", "Набор стационарных машин, используемых в промышленности", "Набор гуманоидных роботов"],
+            ["Слово робот кем и когда было введено в науку?", "1921 год, Карел Чапек", "1925 год, Алан Тьюринг", "1929 год, Макото Нисимура", "1949 год, Эдмунд Каллис Беркли"],
+            ["Термин «искусственный интеллект» был введен в науку кем?", "Алан Тьюринг", "Карел Чапек", "Макото Нисимура", "Эдмунд Каллис Беркли"],
+            ["Кто предложил тест на проверку машинного интеллекта, названный \"Игра в подражание\"?", "Алан Тьюринг", "Артур Самуэль", "Макото Нисимура", "Джон Маккарти"],
+            ["Кем была создана первая «экспертная система» в форме искусственного интеллекта?", "Эдвард Фейгенбаум и Джошуа Ледерберг", "Артур Самуэль", "Алан Тьюринг и Артур Самуэль", "Макото Нисимура"],
+            ["На какие годы приходится период развития искусственного интеллекта?", "1980-1987", "1954-1962", "1965-1972", "1988-1994"],
+            ["На какие годы приходится период достижения зрелости искусственным интеллектом?", "1957-1979", "1954-1962", "1965-1972", "1988-1994"],
+            ["На какие годы приходится период появления искусственного интеллекта?", "1950-1956", "1954-1962", "1965-1972", "1988-1994"],
+            ["На какие годы приходится период остановки развития искусственного интеллекта?", "1987-1993", "1954-1962", "1965-1972", "1988-1991"],
+            ["Какая компания первой разработала программу распознавания речи?", "Microsoft", "Apple", "Xerox", "IBM"],
+            ["Какая компания разработала первую программу, которая победила чемпиона мира по шахматам в шахматной игре?", "IBM", "Apple", "Xerox", "Microsoft"],
+            ["Какой компании принадлежит виртуальный помощник Siri?", "Apple", "IBM", "Xerox", "Microsoft"],
+            ["Какой компании принадлежит Chat GPT?", "OpenAI", "IBM", "Xerox", "Microsoft"],
+            ["Какой компании принадлежит чат Copilot?", "Microsoft", "OpenAI", "IBM", "Xerox"],
+            ["Какой из следующих не является функцией активации?", "Векторизовать", "Релу", "Софтмакс", "Сигмоида"],
+            ["С чем умножаются входные значения в нейронной сети?", "С предвзятостью", "Трудности", "Значения активации с", "Значения на выходе"],
+            ["Какую задачу выполняет самый простой персептрон?", "Бинарная классификация", "Программирование игр", "Векторы делятся", "Непрерывный расчет"],
+            ["Сколько слоев в самой простой нейронной сети?", "1", "2", "3", "4"],
+            ["Какую из следующих функций используют для активации в нейронных сетях?", "Сигмоида", "Логрифм", "Вычитание", "Конкатенация"],
+            ["Для чего необходимо продвижение вперед и назад в нейронных сетях?", "Изучение сети", "Чтобы отключить нейрон.", "Чтобы определить количество синапсов", "Для заполнения информации"],
+            ["Как определяются входные значения нейрона?", "х1, х2, х3", "r1, r2, r3", "w1, w2, w3", "ф1, ф2, ф3"],
+            ["Весы нейрона (weights) какую функцию выполняют?", "Измеряет влияние входных значений", "Сохраняет входные значения", "Определяет выходные значения", "Блокирует нейрон"],
+            ["На каком уровне обрабатываются входные данные?", "Входной слой", "Выходной слой", "Скрытый слой", "Слой синапсов"],
+            ["Какой из следующих является искусственным нейронным элементом?", "Синапс и дендрит", "Смещение и функция активации", "Сигмоида и софтмакс", "Компьютер и процессор"],
+            ["Что такое интеллектуальный агент?", "Программа, которая принимает решения на основе пользовательских данных", "Система хранения данных", "Интернет-поисковик", "Инструмент анализа текста"],
+            ["Как агент воспринимает окружающую среду?", "Через датчики", "Через базу данных", "Через Интернет", "Через пользователей"],
+            ["Какие действия предпринимают агенты?", "Системы управления и движения рук", "Только хранение данных", "Получение результатов поиска в Интернете", "Статический анализ данных"],
+            ["Каковы основные элементы интеллектуальных агентов?", "Датчики и активаторы", "Только приводы", "Сенсоры и память", "Сеть Интернет и базы данных"],
+            ["Какова роль программного агента?", "Прием и обработка сенсорных данных", "Сохранение профилей пользователей", "Обновление системы", "Анализ новых данных"],
+            ["Что делает физический агент?", "Простые механические задачи", "Обработка данных", "Управление обновлениями программного обеспечения", "Хранение данных датчиков"],
+            ["Какая формула представляет структуру интеллектуального агента?", "Агент = Архитектура + Программное обеспечение агента", "Агент = Датчики + Активаторы", "Агент = Данные + Действия", "Агент = Пользователь + Программа"],
+            ["Что включает в себя модель SAAS?", "Интернет-услуги и информация о пользователях", "Пользовательский интерфейс и база данных", "Эффективность, окружающая среда, активаторы, датчики", "Обычные рефлексы и наблюдательность."],
+            ["Какими характеристиками должен обладать интеллектуальный агент?", "Принятие решений", "Только сбор данных", "Обеспечение безопасности", "Управление подключением к Интернету"],
+            ["Каковы основные компоненты робота-агента?", "Камеры, датчики, активаторы", "Текстовые анализаторы и архивы", "Программы электронной почты", "Только активаторы"],
+            ["Какой цели служит модель SAAS?", "Создание базы данных", "Для установки датчиков", "Измерение успешности поведения агента", "Анализ интеллектуальных агентов"],
+            ["В чем недостаток простого рефлекторного агента?", "Не основано на истории восприятия", "Невозможность повторить действия", "Невозможность хранения данных датчиков", "Не имет активаторов"],
+            ["Как работает рефлексный агент, основанный на модели?", "Восприятие основано на истории и модели.", "Выполняет только простые задачи", "Выполняет команды пользователя", "Работает со статическими данными"],
+            ["Что такое «модель» в рефлекторном агенте, основанном на модели?", "Знание того, как устроен мир", "Основано только на простых рефлексах", "Аппаратная часть робота", "База данных"],
+            ["Как агент, основанный на целях, принимает решение?", "Выбирает оптимальные действия для достижения цели", "Основано только на простых рефлексах", "Отслеживает только данные", "Игнорирует текущую ситуацию."],
+            ["Какова функция активатора?", "Энергия преобразуется в движение", "Обеспечивает подключение к Интернету", "Хранит данные", "Анализирует наблюдаемые восприятия"],
+            ["Для чего используются датчики?", "Определение изменений окружающей среды", "Хранение данных", "Работа с инструментами интернет-аналитики.", "Управление действиями"],
+            ["Какие действия выполняет нормальный рефлекторный агент?", "По правилам условных действий", "Только через команды пользователя", "По данным интернета", "Выполняет статические задачи"],
+            ["Что такое внутреннее состояние рефлексивного агента, основанного на модели?", "Текущее состояние, основанное на истории восприятия", "База данных", "Только активаторы", "Инструменты интернет-аналитики"],
+            ["В чем разница между агентом, основанным на цели, и агентом, основанным на модели?", "Целеустремленный агент находит способ достичь цели", "Агент, управляемый моделью, только анализирует данные", "Агент, основанный на цели, не использует модель", "Агент на основе модели выполняет только простые рефлексы."],
+            ["В чем преимущество обучающего агента?", "Улучшения на основе нового опыта", "Использование только имеющихся знаний", "Работа с простыми рефлексами", "Обновление базы данных"],
+            ["Какие действия предпринимает целенаправленный агент?", "Выбирает оптимальный путь достижения цели", "Только на основе рефлексов", "Не учитывает текущую ситуацию.", "Использует инструменты интернет-аналитики"],
+            ["Какое преимущество имеет рефлекторный агент, основанный на модели?", "Может работать в частично контролируемой среде", "Выполняет только простые задачи", "Использует инструменты интернет-аналитики", "Хранит данные датчиков"],
+            ["Какие задачи должен выполнять интеллектуальный агент?", "Восприятие, мышление и действие", "Просто восприятие", "Хранение и отслеживание данных", "Работа с простыми рефлексами"],
+            ["С помощью какого процесса обучающийся агент улучшает свое поведение?", "Через опыт и анализ", "Только путем сбора данных", "Путем повышения нормальных рефлексов", "Использование инструментов интернет-аналитики"],
+            ["Для каких типов агентов подходит модель SAAS?", "Все интеллектуальные агенты", "Просто простые рефлекторные агенты", "Агенты программного обеспечения", "Интернет-услуги"],
+            ["В чем недостаток целевого агента?", "Для достижения цели требуется много времени", "На основе нормальных рефлексов", "Не роботают с датчиками и активаторами", "Основываясь только на имеющемся опыте"],
+            ["В каких ситуациях обучающий агент наиболее эффективен?", "В меняющейся среде", "Только в статической среде", "Только в случаях, основанных на рефлексах", "При отсутствии базы данных"],
+            ["Какие инструменты используются в рефлекторном агенте на основе модели?", "Датчики, активатора и модель", "Только активаторы", "Информация о пользователе", "Инструменты интернет-аналитики"],
+            ["Как работает обучающий агент?", "Он совершенствует свое поведение, используя опыт", "Выполняет только запрограммированные задачи", "Использует инструменты интернет-аналитики", "Работает через обычные рефлексы."],
+   ];
+
+        const allQuestionsRaw = allQuestionsRawData.filter(q => q.length >= 5);
+        const TOTAL_QUESTIONS = allQuestionsRaw.length;
+        const QUESTIONS_PER_STAGE = 30;
+
+        let currentQuestions = [];
+        let currentIdx = 0;
+        let timerInterval;
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i> ${message}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        function showHint() {
+            if (currentQuestions[currentIdx]) {
+                const q = currentQuestions[currentIdx];
+                const hint = `💡 Правильный ответ: "${q.options[q.correctIdx].substring(0, 50)}${q.options[q.correctIdx].length > 50 ? '...' : ''}"`;
+                showToast(hint, 'info');
+            }
+        }
+
+        function shareResult() {
+            const stats = document.getElementById('stats-display').innerText;
+            navigator.clipboard.writeText(`Мой результат по ИИ и NLP: ${stats}`);
+            showToast('Результат скопирован! 📋');
+        }
+
+        function updateStats() {
+            const results = JSON.parse(localStorage.getItem('tr_results') || '[]');
+            const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+            
+            document.getElementById('totalTests').textContent = results.length;
+            document.getElementById('totalErrors').textContent = errors.length;
+            
+            if (results.length > 0) {
+                const avg = results.reduce((a, b) => a + b.score, 0) / results.length;
+                document.getElementById('avgScore').textContent = Math.round(avg) + '%';
+                const best = Math.max(...results.map(r => r.score));
+                document.getElementById('bestScore').textContent = best + '%';
+            }
+        }
+
+        function searchQuestions() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            if (!term) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+            
+            const results = [];
+            for (let i = 0; i < allQuestionsRaw.length; i++) {
+                if (allQuestionsRaw[i][0].toLowerCase().includes(term)) {
+                    results.push({ index: i, question: allQuestionsRaw[i][0] });
+                }
+            }
+            
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<div style="padding: 20px; text-align: center;">Ничего не найдено 🔍</div>';
+                return;
+            }
+            
+            resultsDiv.innerHTML = results.slice(0, 20).map(r => `
+                <div class="stage-card" style="margin-bottom: 10px; cursor: pointer;" onclick="startSingleQuestion(${r.index})">
+                    <strong>Вопрос ${r.index + 1}</strong>
+                    <p style="margin-top: 8px;">${r.question.substring(0, 100)}${r.question.length > 100 ? '...' : ''}</p>
+                </div>
+            `).join('');
+        }
+
+        function startSingleQuestion(idx) {
+            startTest([allQuestionsRaw[idx]], 'Один вопрос');
+            setTimeout(() => {
+                document.getElementById('searchResults').innerHTML = '';
+                document.getElementById('searchInput').value = '';
+            }, 100);
+        }
+
+        function startErrorsOnly() {
+            const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+            if (errors.length === 0) {
+                showToast('Нет вопросов с ошибками! 🎉', 'info');
+                return;
+            }
+            const errorQuestions = errors.map(e => allQuestionsRaw.find(q => q[0] === e.q)).filter(q => q);
+            if (errorQuestions.length === 0) return;
+            startTest(errorQuestions, 'Только ошибки');
+        }
+
+        function startRandom30() { startRandomN(30); }
+        function startRandom50() { startRandomN(50); }
+        function startRandom100() { startRandomN(100); }
+        
+        function startRandomN(n) {
+            // Перемешивание методом Фишера-Йетса (более случайное)
+            const shuffled = [...allQuestionsRaw];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            const takeCount = Math.min(n, TOTAL_QUESTIONS);
+            startTest(shuffled.slice(0, takeCount), `Случайные ${takeCount}`);
+        }
+
+        function startTest(qs, name) {
+            currentQuestions = qs.map((q, idx) => {
+                const correct = q[1];
+                // Перемешиваем варианты ответов
+                const opts = [...q.slice(1)];
+                for (let i = opts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [opts[i], opts[j]] = [opts[j], opts[i]];
+                }
+                const globalIdx = allQuestionsRaw.findIndex(x => x[0] === q[0]);
+                return { 
+                    q: q[0], 
+                    options: opts, 
+                    correctIdx: opts.indexOf(correct), 
+                    user: null, 
+                    globalIndex: globalIdx >= 0 ? globalIdx : idx 
+                };
+            });
+            
+            currentIdx = 0;
+            
+            document.getElementById('menu-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            
+            renderNavigation();
+            renderQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            let time = 3600;
+            if (timerInterval) clearInterval(timerInterval);
+            const update = () => {
+                time--;
+                const m = Math.floor(time / 60);
+                const s = time % 60;
+                document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+                if (time <= 0) { 
+                    clearInterval(timerInterval); 
+                    showResult(); 
+                }
+            };
+            update();
+            timerInterval = setInterval(update, 1000);
+        }
+
+        function renderNavigation() {
+            const nav = document.getElementById('numbers-nav');
+            nav.innerHTML = '';
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const btn = document.createElement('div');
+                btn.className = 'num-item';
+                btn.textContent = i + 1;
+                btn.onclick = () => { currentIdx = i; renderQuestion(); updateNavActive(); };
+                nav.appendChild(btn);
+            }
+            updateNavActive();
+        }
+
+        function updateNavActive() {
+            document.querySelectorAll('.num-item').forEach((el, i) => {
+                el.classList.remove('active');
+                if (i === currentIdx) el.classList.add('active');
+                if (currentQuestions[i] && currentQuestions[i].user !== null) {
+                    el.classList.remove('correct', 'wrong');
+                    el.classList.add(currentQuestions[i].user === currentQuestions[i].correctIdx ? 'correct' : 'wrong');
+                }
+            });
+        }
+
+        function renderQuestion() {
+            const q = currentQuestions[currentIdx];
+            if (!q) return;
+            
+            const progress = ((currentIdx + 1) / currentQuestions.length * 100).toFixed(1);
+            document.getElementById('progress-fill').style.width = `${progress}%`;
+            document.getElementById('progress-text').textContent = `Прогресс: ${currentIdx + 1}/${currentQuestions.length} (${progress}%)`;
+            document.getElementById('question-counter').innerHTML = `<i class="fas fa-question-circle"></i> Вопрос ${currentIdx + 1} из ${currentQuestions.length}`;
+            
+            document.getElementById('q-text').innerHTML = `<span style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px;">Вопрос ${q.globalIndex + 1}</span><br>${q.q}`;
+            
+            const box = document.getElementById('options-box');
+            box.innerHTML = '';
+            
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.innerHTML = `<strong>${String.fromCharCode(65 + i)})</strong> ${opt}`;
+                if (q.user !== null) {
+                    btn.disabled = true;
+                    if (i === q.correctIdx) btn.classList.add('correct');
+                    if (i === q.user && i !== q.correctIdx) btn.classList.add('wrong');
+                } else {
+                    btn.onclick = () => {
+                        q.user = i;
+                        const isCorrect = i === q.correctIdx;
+                        if (isCorrect) {
+                            showToast('✅ Правильно!', 'success');
+                        } else {
+                            showToast(`❌ Неправильно! Правильный ответ: ${q.options[q.correctIdx]}`, 'info');
+                        }
+                        renderQuestion();
+                        updateNavActive();
+                    };
+                }
+                box.appendChild(btn);
+            });
+            
+            updateNavActive();
+        }
+
+        function prevQuestion() {
+            if (currentIdx > 0) { 
+                currentIdx--; 
+                renderQuestion(); 
+            }
+        }
+
+        function nextQuestion() {
+            if (currentIdx < currentQuestions.length - 1) { 
+                currentIdx++; 
+                renderQuestion(); 
+            } else { 
+                showResult(); 
+            }
+        }
+
+        function confirmFinish() {
+            if (confirm('Завершить тест?')) showResult();
+        }
+
+        function showResult() {
+            clearInterval(timerInterval);
+            const correct = currentQuestions.filter(q => q.user === q.correctIdx).length;
+            const percent = Math.round((correct / currentQuestions.length) * 100);
+            let grade, color;
+            if (percent >= 85) { grade = 5; color = '#10b981'; }
+            else if (percent >= 70) { grade = 4; color = '#3b82f6'; }
+            else if (percent >= 60) { grade = 3; color = '#f59e0b'; }
+            else { grade = 2; color = '#ef4444'; }
+            
+            document.getElementById('grade-display').textContent = grade;
+            document.getElementById('grade-display').style.color = color;
+            document.getElementById('stats-display').innerHTML = `${correct}/${currentQuestions.length} (${percent}%)`;
+            document.getElementById('details-display').innerHTML = `✅ Правильных: ${correct}<br>❌ Ошибок: ${currentQuestions.filter(q => q.user !== null && q.user !== q.correctIdx).length}<br>⏸ Без ответа: ${currentQuestions.filter(q => q.user === null).length}`;
+            
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+            
+            const results = JSON.parse(localStorage.getItem('tr_results') || '[]');
+            results.unshift({ date: new Date().toLocaleString(), score: percent, correct, total: currentQuestions.length, grade });
+            localStorage.setItem('tr_results', JSON.stringify(results.slice(0, 50)));
+            
+            const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+            currentQuestions.filter(q => q.user !== q.correctIdx).forEach(e => {
+                if (!errors.some(err => err.q === e.q)) {
+                    errors.unshift({ q: e.q, a: e.options[e.correctIdx], date: new Date().toLocaleString() });
+                }
+            });
+            localStorage.setItem('tr_errors', JSON.stringify(errors.slice(0, 100)));
+            
+            updateStats();
+            renderSidebar();
+        }
+
+        function renderSidebar() {
+            const results = JSON.parse(localStorage.getItem('tr_results') || '[]');
+            const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+            
+            const rDiv = document.getElementById('results-history');
+            rDiv.innerHTML = results.slice(0, 15).map(r => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div><strong>${r.date}</strong></div>
+                    <div>Оценка: ${r.grade} (${r.score}%)</div>
+                    <div>${r.correct}/${r.total} правильных</div>
+                </div>
+            `).join('');
+            if (results.length === 0) rDiv.innerHTML = '<p style="text-align: center;">Нет записей</p>';
+            
+            const eDiv = document.getElementById('errors-history');
+            eDiv.innerHTML = errors.slice(0, 15).map(e => `
+                <div style="padding: 12px; border-bottom: 1px solid var(--border); margin-bottom: 10px; background: rgba(239, 68, 68, 0.1); border-radius: 12px;">
+                    <div><strong>❌ Вопрос:</strong> ${e.q.substring(0, 80)}${e.q.length > 80 ? '...' : ''}</div>
+                    <div><strong>✅ Ответ:</strong> ${e.a}</div>
+                    <small>${e.date}</small>
+                </div>
+            `).join('');
+            if (errors.length === 0) eDiv.innerHTML = '<p style="text-align: center;">Ошибок нет! 🎉</p>';
+        }
+
+        function clearResultsOnly() {
+            if (confirm('Очистить историю результатов?')) {
+                localStorage.removeItem('tr_results');
+                updateStats();
+                renderSidebar();
+                showToast('История очищена');
+            }
+        }
+
+        function clearErrorsOnly() {
+            if (confirm('Очистить список ошибок?')) {
+                localStorage.removeItem('tr_errors');
+                renderSidebar();
+                showToast('Ошибки очищены');
+            }
+        }
+
+        function toggleSidePanel() {
+            document.getElementById('side-panel').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+            if (document.getElementById('side-panel').classList.contains('active')) renderSidebar();
+        }
+
+        function initMenu() {
+            const container = document.getElementById('stages-container');
+            container.innerHTML = '';
+            
+            const stages = Math.ceil(TOTAL_QUESTIONS / QUESTIONS_PER_STAGE);
+            for (let i = 0; i < stages; i++) {
+                const start = i * QUESTIONS_PER_STAGE;
+                const end = Math.min(start + QUESTIONS_PER_STAGE, TOTAL_QUESTIONS);
+                const card = document.createElement('div');
+                card.className = 'stage-card';
+                card.innerHTML = `
+                    <i class="fas fa-layer-group" style="font-size: 32px; color: var(--primary); margin-bottom: 10px;"></i>
+                    <h3>Этап ${i + 1}</h3>
+                    <p>Вопросы ${start + 1} - ${end}</p>
+                    <div style="font-size: 0.85rem; opacity: 0.7;">${end - start} вопросов</div>
+                `;
+                card.onclick = () => startTest(allQuestionsRaw.slice(start, end), `Этап ${i + 1}`);
+                container.appendChild(card);
+            }
+            
+            const allCard = document.createElement('div');
+            allCard.className = 'stage-card';
+            allCard.innerHTML = `
+                <i class="fas fa-database" style="font-size: 32px; color: var(--success); margin-bottom: 10px;"></i>
+                <h3>Все вопросы</h3>
+                <p>1 - ${TOTAL_QUESTIONS}</p>
+                <div style="font-size: 0.85rem; opacity: 0.7;">${TOTAL_QUESTIONS} вопросов</div>
+            `;
+            allCard.onclick = () => startTest([...allQuestionsRaw], 'Все вопросы');
+            container.appendChild(allCard);
+            
+            updateStats();
+            renderSidebar();
+        }
+
+        initMenu();
+    </script>
+</body>
+</html>
