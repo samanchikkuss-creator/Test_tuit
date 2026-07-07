@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тесты по Программированию 2-B</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
+            --primary-light: #c4b5fd;
+            --accent: #06b6d4;
+            --accent-pink: #ec4899;
+            --success: #10b981;
+            --success-dark: #059669;
+            --error: #f43f5e;
+            --error-dark: #e11d48;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg: #0f0b1e;
+            --surface: rgba(30, 23, 57, 0.65);
+            --surface-solid: #1a1533;
+            --text: #f1f0fa;
+            --text-secondary: #a29fc4;
+            --border: rgba(148, 130, 219, 0.25);
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.35), transparent 40%),
+                radial-gradient(circle at 85% 20%, rgba(6, 182, 212, 0.25), transparent 40%),
+                radial-gradient(circle at 50% 90%, rgba(236, 72, 153, 0.25), transparent 45%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink), var(--primary));
+            background-size: 300% 100%;
+            animation: gradientShift 6s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        h1 i {
+            -webkit-text-fill-color: initial;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 16px 26px;
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease;
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            color: var(--text);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .search-results {
+            margin-top: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stage-card {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(.2,.8,.2,1);
+            border: 1.5px solid var(--border);
+            color: var(--text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stage-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(6,182,212,0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stage-card:hover {
+            transform: translateY(-6px) scale(1.01);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px -10px rgba(124, 58, 237, 0.4);
+        }
+
+        .stage-card:hover::before {
+            opacity: 1;
+        }
+
+        .stats-panel {
+            background: linear-gradient(135deg, var(--primary), var(--accent-pink) 120%);
+            border-radius: 20px;
+            padding: 22px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px -8px rgba(124, 58, 237, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.25s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #ea580c);
+            color: white;
+        }
+
+        .option {
+            padding: 16px 20px;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: var(--text);
+            width: 100%;
+            margin-bottom: 12px;
+            transition: all 0.25s cubic-bezier(.2,.8,.2,1);
+            text-align: left;
+            font-size: 1em;
+        }
+
+        .option:hover:not(:disabled) {
+            transform: translateX(6px);
+            border-color: var(--accent);
+            box-shadow: 0 6px 20px -6px rgba(6, 182, 212, 0.4);
+        }
+
+        .option.correct {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            border-color: var(--success);
+            box-shadow: 0 6px 20px -4px rgba(16, 185, 129, 0.5);
+        }
+
+        .option.wrong {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+            border-color: var(--error);
+            box-shadow: 0 6px 20px -4px rgba(244, 63, 94, 0.5);
+        }
+
+        .option:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        .option:disabled {
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 6px 20px -4px rgba(124, 58, 237, 0.5);
+        }
+
+        .session-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--primary), var(--accent-pink));
+            color: white;
+            padding: 5px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            box-shadow: 0 6px 16px -4px rgba(124, 58, 237, 0.5);
+        }
+
+        .review-item {
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--error);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .review-item .review-q {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .review-item .review-your {
+            color: var(--error);
+            margin-bottom: 6px;
+        }
+
+        .review-item .review-correct {
+            color: var(--success);
+        }
+
+        .numbers-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+            max-height: 140px;
+            overflow-y: auto;
+            padding: 15px;
+            background: var(--surface);
+            border-radius: 16px;
+            border: 2px solid var(--border);
+        }
+
+        .num-item {
+            min-width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .num-item:hover {
+            border-color: var(--accent);
+            transform: scale(1.08);
+        }
+
+        .num-item.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 4px 14px -2px rgba(124, 58, 237, 0.6);
+        }
+
+        .num-item.correct {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+            border-color: var(--success);
+        }
+
+        .num-item.wrong {
+            background: linear-gradient(135deg, var(--error), var(--error-dark));
+            color: white;
+            border-color: var(--error);
+        }
+
+        .progress-section {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(148, 130, 219, 0.15);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink));
+            background-size: 200% 100%;
+            border-radius: 20px;
+            transition: width 0.5s ease;
+        }
+
+        .timer {
+            font-family: 'Space Grotesk', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .question-text {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 4px solid var(--accent);
+            border-top: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+        }
+
+        .side-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 400px;
+            max-width: 90%;
+            height: 100%;
+            background: var(--surface-solid);
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+            z-index: 1000;
+            padding: 80px 20px 20px;
+            overflow-y: auto;
+            color: var(--text);
+            border-left: 1px solid var(--border);
+        }
+
+        .side-panel.active {
+            right: 0;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 14px 26px;
+            border-radius: 14px;
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            color: var(--text);
+            box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+            z-index: 1100;
+            animation: fadeIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            backdrop-filter: blur(16px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .grade-badge {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+            filter: drop-shadow(0 0 25px currentColor);
+        }
+
+        .stats-box {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.4);
+        }
+
+        .result-sticker {
+            font-size: 5rem;
+            margin: 10px 0 20px;
+            line-height: 1;
+            display: inline-block;
+        }
+
+        @keyframes stickerPop {
+            0% { transform: scale(0) rotate(-20deg); opacity: 0; }
+            60% { transform: scale(1.25) rotate(8deg); opacity: 1; }
+            80% { transform: scale(0.95) rotate(-4deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        @keyframes stickerBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-14px); }
+        }
+
+        @keyframes stickerWobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-8deg); }
+            75% { transform: rotate(8deg); }
+        }
+
+        @keyframes stickerShake {
+            0%, 100% { transform: translateX(0) rotate(0deg); }
+            20% { transform: translateX(-6px) rotate(-4deg); }
+            40% { transform: translateX(6px) rotate(4deg); }
+            60% { transform: translateX(-4px) rotate(-2deg); }
+            80% { transform: translateX(4px) rotate(2deg); }
+        }
+
+        .result-sticker.grade-5 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards, stickerBounce 1.4s ease-in-out 0.6s infinite;
+        }
+
+        .result-sticker.grade-4 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards, stickerWobble 1.8s ease-in-out 0.6s infinite;
+        }
+
+        .result-sticker.grade-3 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards;
+        }
+
+        .result-sticker.grade-2 {
+            animation: stickerPop 0.6s cubic-bezier(.3,1.6,.5,1) forwards, stickerShake 0.6s ease-in-out 0.7s;
+        }
+
+        .confetti-piece {
+            position: fixed;
+            top: -20px;
+            width: 10px;
+            height: 14px;
+            opacity: 0.9;
+            pointer-events: none;
+            z-index: 1200;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(105vh) rotate(540deg); opacity: 0.4; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 15px; }
+            h1 { font-size: 1.3rem; }
+            .option { padding: 12px 16px; }
+            .num-item { min-width: 40px; height: 40px; font-size: 0.85rem; }
+            .btn { padding: 10px 16px; font-size: 0.85rem; }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .name-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 6, 24, 0.85);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .name-modal {
+            background: var(--surface-solid);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 380px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 60px -10px rgba(124, 58, 237, 0.5);
+            animation: stickerPop 0.4s cubic-bezier(.3,1.6,.5,1) forwards;
+        }
+
+        .name-modal h2 {
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+
+        .name-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .name-modal input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text);
+            font-size: 1em;
+            outline: none;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .name-modal input:focus {
+            border-color: var(--accent);
+        }
+
+        .participants-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        .greeting-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+
+        .status-dot.online {
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+            animation: statusPulse 1.6s ease-in-out infinite;
+        }
+
+        .status-dot.offline {
+            background: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { box-shadow: 0 0 6px var(--success); }
+            50% { box-shadow: 0 0 14px var(--success); }
+        }
+
+        .online-count-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(90deg, var(--accent), var(--primary), var(--accent-pink), var(--primary));
+            background-size: 300% 100%;
+            animation: gradientShift 6s ease infinite;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .logo i {
+            -webkit-text-fill-color: initial;
+            background: linear-gradient(135deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header-actions { display: flex; gap: 12px; align-items: center; }
+        .theme-toggle {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            border: 1.5px solid var(--border);
+            background: var(--surface);
+            backdrop-filter: blur(12px);
+            color: var(--text);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.25s ease;
+        }
+        .theme-toggle:hover { border-color: var(--accent); transform: rotate(15deg); }
+        .btn-group { display: flex; gap: 15px; margin-bottom: 30px; flex-wrap: wrap; }
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), var(--success-dark));
+            color: white;
+        }
+        .close-panel {
+            float: right; background: none; border: none;
+            font-size: 24px; cursor: pointer; color: inherit;
+        }
+    </style>
+
+    <style>
+        .back-to-hub {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: rgba(30, 23, 57, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(148, 130, 219, 0.3);
+            border-radius: 30px;
+            color: #f1f0fa;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 8px 20px -4px rgba(0,0,0,0.4);
+            transition: all 0.25s ease;
+        }
+        .back-to-hub:hover {
+            transform: translateX(-3px);
+            border-color: #06b6d4;
+        }
+    </style>
+</head>
+<body>
+<a href="../index.html" class="back-to-hub"><i class="fas fa-arrow-left"></i> Все предметы</a>
+
+
+<div class="container">
+    <header class="header">
+        <div class="logo"><i class="fas fa-code"></i><span>Тесты по программированию</span></div>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="toggleSidePanel()"><i class="fas fa-history"></i> История</button>
+        </div>
+    </header>
+
+    <div id="menu-screen">
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="🔍 Поиск вопросов..." oninput="searchQuestions()">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+
+        <div class="stats-panel">
+            <h3><i class="fas fa-chart-simple"></i> Ваша статистика</h3>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="totalTests">0</div><div class="stat-label">Пройдено тестов</div></div>
+                <div class="stat-card"><div class="stat-value" id="avgScore">0%</div><div class="stat-label">Средний результат</div></div>
+                <div class="stat-card"><div class="stat-value" id="totalErrors">0</div><div class="stat-label">Ошибок всего</div></div>
+                <div class="stat-card"><div class="stat-value" id="bestScore">0%</div><div class="stat-label">Лучший результат</div></div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-danger" onclick="startErrorsOnly()"><i class="fas fa-bug"></i> Только ошибки</button>
+            <button class="btn btn-primary" onclick="startRandom(30)"><i class="fas fa-random"></i> Случайные 30</button>
+            <button class="btn btn-primary" onclick="startRandom(50)"><i class="fas fa-random"></i> Случайные 50</button>
+            <button class="btn btn-primary" onclick="startRandom(100)"><i class="fas fa-random"></i> Случайные 100</button>
+            <button class="btn btn-warning" onclick="startSession()"><i class="fas fa-clock"></i> Сессия (18)</button>
+        </div>
+
+        <div class="menu-grid" id="stages-container"></div>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div class="timer" id="timer">60:00</div>
+            <div style="display:flex; gap:12px;">
+                <button class="btn" onclick="showHint()"><i class="fas fa-lightbulb"></i> Подсказка</button>
+                <button class="btn btn-danger" onclick="confirmFinish()"><i class="fas fa-check-circle"></i> Завершить</button>
+            </div>
+        </div>
+        <div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+        <div id="progress-text" style="text-align:center; font-size:0.9rem; margin-bottom:12px;"></div>
+        <div id="question-counter" style="font-weight:600; margin-bottom:8px;"></div>
+        <div class="numbers-nav" id="numbers-nav"></div>
+        <div class="question-text" id="question-text"><div id="q-text"></div></div>
+        <div id="options-box"></div>
+        <div class="nav-buttons">
+            <button id="prev-btn" class="btn" onclick="prevQuestion()" style="flex:1;"><i class="fas fa-arrow-left"></i> Назад</button>
+            <button id="next-btn" class="btn btn-primary" onclick="nextQuestion()" style="flex:1;">Далее <i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align:center;">
+        <div class="grade-badge" id="grade-display"></div>
+        <div class="stats-box">
+            <p id="stats-display" style="font-size:1.6rem; font-weight:700;"></p>
+            <p id="details-display" style="margin-top:10px;"></p>
+        </div>
+        <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="location.reload()"><i class="fas fa-home"></i> В меню</button>
+            <button class="btn btn-success" onclick="shareResult()"><i class="fas fa-share-alt"></i> Поделиться</button>
+        </div>
+    </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="toggleSidePanel()"></div>
+<div class="side-panel" id="side-panel">
+    <button class="close-panel" onclick="toggleSidePanel()">✕</button>
+    <h2><i class="fas fa-chart-simple"></i> История</h2>
+    <div id="results-history" style="margin:20px 0; max-height:300px; overflow-y:auto;"></div>
+    <button class="btn btn-danger" onclick="clearResults()" style="width:100%; margin-bottom:20px;"><i class="fas fa-trash"></i> Очистить историю</button>
+    <h2><i class="fas fa-exclamation-triangle"></i> Ошибки</h2>
+    <div id="errors-history" style="margin:20px 0; max-height:300px; overflow-y:auto;"></div>
+    <button class="btn btn-danger" onclick="clearErrors()" style="width:100%;"><i class="fas fa-trash"></i> Очистить ошибки</button>
+</div>
+
+<script>
+// ============================================================
+// 1. ПОЛНАЯ БАЗА ВОПРОСОВ (~330 вопросов из двух файлов)
+//    Формат: [ "текст вопроса", "правильный ответ", "вариант1", "вариант2", "вариант3", "вариант4" ]
+// ============================================================
+const ALL_QUESTIONS_RAW = [
+    // ========== 1_VS_WINFORMS_01.docx ==========
+    // --- WinForms (вопросы 1-10) ---
+    ["Какой элемент управления используется для отображения текста, который нельзя редактировать пользователем?", "Label", "Label", "TextBox", "Button", "MaskedTextBox"],
+    ["Как добавить новый элемент управления на форму в Visual Studio 2022?", "Перетащить элемент управления из панели Toolbox на форму", "Перетащить элемент управления из панели Toolbox на форму", "Добавить через меню «View»", "Использовать командную строку", "Добавить через меню «Project»"],
+    ["Какое свойство элемента Button используется для задания текста на кнопке?", "Text", "Text", "Name", "Value", "Content"],
+    ["Какое событие элемента Button чаще всего используется для обработки нажатия на кнопку?", "Click", "Click", "Press", "Enter", "Hover"],
+    ["Какое свойство формы задает ее заголовок?", "Text", "Text", "Title", "Header", "Name"],
+    ["Как изменить цвет фона формы в Visual Studio 2022?", "Изменить свойство формы BackColor", "Изменить свойство формы BackColor", "Изменить свойство формы Color", "Изменить свойство формы Background", "Изменить свойство формы ForeColor"],
+    ["Какое свойство элемента Label позволяет установить выравнивание текста?", "TextAlign", "TextAlign", "Alignment", "TextDirection", "TextPosition"],
+    ["Какое из следующих свойств используется для задания координат элемента управления на форме?", "Location", "Location", "Size", "Position", "Alignment"],
+    ["Какой элемент управления можно использовать для отображения изображения на форме?", "PictureBox", "PictureBox", "ImageBox", "PhotoBox", "DisplayBox"],
+    ["Какое свойство элемента Button позволяет сделать кнопку неактивной?", "Enabled", "Enabled", "Visible", "Active", "Clickable"],
+
+    // --- array/vector/deque/forward_list/list ---
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? array < int, 7 > arr={17,7,13,11,1,22,8}; cout<<arr.size()<<\" \"<<arr.max_size();", "7 7", "7 7", "1 17", "17 1", "7 17"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? int s=0; array <int,10> arr1; array <int,10> arr2={1,8,7,11,5,2,5,9,4,7}; arr1.fill(7); array <int,10>::iterator it,itb,ite; itb=arr2.begin()+2; ite=arr2.begin()+5; for(it=itb; it!=ite; it++) s+=*it+arr1[3]; cout<<s;", "44", "44", "33", "47", "59"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? int s=0; vector <int> vec(7,4); vector <int> :: iterator it; vec.push_back(11); vec.push_back(1); it=vec.begin(); vec.erase(it,it+3); for(int i=0; i<vec.size(); i++) s+=vec.at(i); cout<<s;", "28", "28", "24", "32", "29"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? int s = 0; vector <int> vec(4,5); vector <int> ::iterator it; vec.push_back(7); vec.push_back(11); it = vec.begin(); vec.erase(it, it + 2); for (int i = 0; i < vec.size(); i++) s += vec.at(i); cout << s;", "28", "28", "22", "44", "38"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? array < int, 10 > arr; int s = 10; arr.fill(7); arr[2] = 4; arr[7] = 11; for (int i = 0; i < arr.size(); i++) s += arr.at(i); cout << s;", "81", "81", "70", "77", "73"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? array < int, 10 > arr={1,17,33,21,12,2,18,9,11,24}; cout<<arr.size()<<\" \"<<arr.max_size();", "10 10", "10 10", "1 33", "33 1", "10 1"],
+    ["Какой метод (функция) предоставляет доступ к первому элементу одно связанного списка (в контейнере forward_list)?", "front", "front", "top", "face", "head"],
+    ["Какой метод (функция) предоставляет доступ к последнему элементу двух связанного списка (в контейнере list)?", "back", "back", "aft", "end", "—"],
+    ["Какой метод (функция) в контейнере vector проверяет, пустой ли контейнер", "empty", "empty", "bare", "vacant", "hollow"],
+    ["Какой метод (функция) вставляет элементы после указанного элемента (в контейнере forward_list)?", "insert_after", "insert_after", "insert", "push", "push_back"],
+    ["Какой метод (функция) вставляет элемент перед указанным элементом (в контейнере list)?", "insert", "insert", "insert_after", "push", "push_back"],
+    ["Какой метод (функция) удаляет указанный элемент(ы) (в контейнере vector)?", "erase", "erase", "resize", "pop", "clear"],
+    ["Какой метод (функция) в контейнере list очищает содержимое контейнера?", "clear", "clear", "resize", "pop", "erase"],
+    ["Какой метод (функция) в контейнере forward_list удаляет элементы после указанного элемента?", "erase_after", "erase_after", "erase", "pop", "clear"],
+    ["Какой метод (функция) в контейнере list осуществляет слияние двух отсортированных списков в один?", "merge", "merge", "unique", "join", "fuse"],
+    ["Какой метод (функция) в контейнере list осуществляет сортировку элементов списка?", "sort", "sort", "rank", "order", "sift"],
+    ["Какой метод (функция) которая заполняет контейнер array указанным значением?", "fill", "fill", "full", "load", "stuff"],
+    ["Какой метод (функция) предоставляет доступ к указанному элементу (с проверкой) границ в контейнере vector?", "at", "at", "[]", "front", "back"],
+    ["Какой метод (функция) предоставляет доступ к указанному элементу (без проверки границ) в контейнере deque", "[]", "[]", "at", "front", "back"],
+    ["Какой метод (функция) возвращает количество элементов в контейнере array?", "size", "size", "capacity", "range", "volume"],
+    ["Какой метод (функция) в контейнере vector возвращает количество элементов, которые могут храниться в выделенной в данный момент памяти?", "capacity", "capacity", "size", "range", "volume"],
+    ["Какой метод (функция) в контейнере vector уменьшает использование памяти за счёт освобождения неиспользуемой памяти?", "shrink_to_fit", "shrink_to_fit", "resize", "fit", "shrink_ty_fit"],
+    ["Какой метод (функция) в контейнере vector резервирует память?", "reserve", "reserve", "resize", "earmark", "allocate"],
+    ["Какой метод (функция) в контейнере deque добавляет элемент в конец?", "push_back", "push_back", "push", "push_front", "back"],
+    ["Какой метод (функция) в контейнере deque добавляет элемент в начало?", "push_front", "push_front", "push", "push_back", "front"],
+    ["Какой метод (функция) в контейнере vector возвращает максимально возможное количество элементов?", "max_size", "max_size", "size", "capacity", "allocate"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? int s=0; deque<int> vec(4,3); vec.push_back(7); vec.push_back(11); vec.resize(10,4); for(int i=0; i<vec.size(); i++) s+=vec.at(i); cout<<s;", "46", "46", "30", "44", "40"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? forward_list<int> L(10,1); int k=0; for(auto it=L.begin(); it!=L.end(); it++){ if(k%3==0) *it += pow(-1,k)*4; k++; } L.sort(greater<int>()); L.unique(); for(auto el: L) cout<<el<<\" \";", "5 1 -3", "5 1 -3", "-3 5 1", "5 5 5 1 1 1 -3 -3 -3 -3", "1 5"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? forward_list<int> L(10,1); int k=0; for(auto it=L.begin(); it!=L.end(); it++){ k++; if(k%3==0) *it += pow(-1,k)*4; } L.sort(); L.unique(); for(auto el: L) cout<<el<<\" \";", "-3 1 5", "-3 1 5", "5 1 -3", "5 5 5 1 1 1 -3 -3 -3 -3", "1 5"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? forward_list<int> L(10,1); int k=0; for(auto it=L.begin(); it!=L.end(); it++){ k++; if(k%3==0) *it += pow(-1,k)*4; } for(auto el: L) cout<<el<<\" \";", "1 1 -3 1 1 5 1 1 -3 1", "1 1 -3 1 1 5 1 1 -3 1", "-3 1 1 5 1 1 -3 1 1 5", "5 1 1 -3 1 1 5 1 1 -3", "1 -3 1 1 5 1 1 -3 1 1"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? list<int> L(4,3); list<int>::iterator itb; itb=L.begin(); advance(itb,3); L.insert(itb,11); for(auto el: L) cout<<el<<\" \";", "3 3 3 11 3", "3 3 3 11 3", "3 3 11 3 3", "11 11 11 11 3 11", "11 11 3 11 11"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? deque<int> d; deque<int>::const_iterator it; d.push_back(7); d.push_front(11); d.push_back(1); it = d.begin(); d.insert(it+1,2); for(auto el:d) cout<<el<<\" \";", "11 2 7 1", "11 2 7 1", "7 11 2 1", "7 2 11 1", "11 7 1 2"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? forward_list<int> l(2,0); l.push_front(5); l.push_front(3); l.push_front(1); l.push_front(2); auto it=l.begin(); it++; l.insert_after(it,2); for(auto el:l) cout<<el<<\" \";", "2 1 2 3 5 0 0", "2 1 2 3 5 0 0", "2 1 3 2 5 0 0", "1 2 3 2 5 0 0", "1 3 2 2 5 0 0"],
+    ["Что напечатается на мониторе, в результате выполнения фрагмента программы? forward_list<int> l(3,0); l.push_front(9); l.push_front(3); l.push_front(11); l.insert_after(l.begin(),2); auto it=l.before_begin(); it++; l.insert_after(it,7); for(auto el:l) cout<<el<<\" \";", "11 7 2 3 9 0 0 0", "11 7 2 3 9 0 0 0", "9 7 2 3 11 0 0 0", "2 9 7 11 3 0 0 0", "3 9 7 11 2 0 0 0"],
+    ["setlocale(0, \"\"); forward_list < char> FL('!'); if (FL.empty()) { cout << \"FL пустой!\"; return 0; } cout << \"FL не пустой!\"; return 0;", "FL не пустой!", "FL не пустой!", "FL пустой!", "true", "false"],
+    ["setlocale(0, \"\"); forward_list < char> FL('!'); if (!FL.empty()) { cout << \"FL пустой!\"; return 0; } cout << \"FL не пустой!\"; return 0;", "FL пустой!", "FL пустой!", "FL не пустой!", "true", "false"],
+
+    // --- ООП (классы, наследование, инкапсуляция) из первого файла ---
+    ["Какое из терминов указанном в вариантах ответа не соответствует следующему описанию: ... - это искусственно созданный тип программистом.", "функция", "функция", "класс", "структура", "объединение"],
+    ["В какой строке приведено парадигмы ООП?", "Инкапсуляция, наследование, полиморфизм", "Инкапсуляция, наследование, полиморфизм", "Абстракция, инкапсуляция, рекурсия", "Наследование, абстракция, рекурсия", "Полиморфизм, абстракция, рекурсия"],
+    ["Что такое класс в объектно-ориентированном программировании?", "Шаблон для создания объектов", "Шаблон для создания объектов", "Экземпляр объекта", "Модификатор доступа", "Рекурсия"],
+    ["Выделение существенные особенности изучаемого объекта и игнорировать несущественные. Это - ...", "абстракция", "абстракция", "полиморфизм", "наследование", "инкапсуляция"],
+    ["Осязаемая сущность, которая чётко проявляет своё поведение и обладает состоянием, поведением и идентичностью. Это -", "объект", "объект", "класс", "структура", "объединение"],
+    ["Множество объектов, обладающих общей структурой, поведением и семантикой, экземпляром которого является объект. Это -", "класс", "класс", "функция", "метод", "рекурсия"],
+    ["Инкапсуляция -- это ...", "свойства системы, позволяющее объединить данные и методы, работающие с ними в классе, и скрыть детали реализации от пользователя", "свойства системы, позволяющее объединить данные и методы, работающие с ними в классе, и скрыть детали реализации от пользователя", "свойства системы, позволяющее описать новый класс на основе уже существующего", "свойства системы использовать объекты с одинаковым интерфейсом", "выделение существенные особенности изучаемого объекта"],
+    ["Наследование - это", "свойства системы, позволяющее описать новый класс на основе уже существующего с частично или полностью заимствующейся функциональностью", "свойства системы, позволяющее описать новый класс на основе уже существующего с частично или полностью заимствующейся функциональностью", "свойства системы, позволяющее объединить данные и методы", "свойства системы использовать объекты с одинаковым интерфейсом", "выделение существенные особенности изучаемого объекта"],
+    ["Полиморфизм - это", "свойства системы использовать объекты с одинаковым интерфейсом без информации о типе и внутренней структуры объекта", "свойства системы использовать объекты с одинаковым интерфейсом без информации о типе и внутренней структуры объекта", "свойства системы, позволяющее объединить данные и методы", "свойства системы, позволяющее описать новый класс на основе уже существующего", "выделение существенные особенности изучаемого объекта"],
+    ["Какая из следующих концепций ООП позволяет создавать новые типы данных на основе уже существующих?", "Наследование", "Наследование", "Полиморфизм", "Инкапсуляция", "Абстракция"],
+    ["Что такое объект в контексте объектно-ориентированного программирования?", "Экземпляр класса", "Экземпляр класса", "Метод", "Функция", "Память"],
+    ["Какой из следующих терминов описывает способность объекта хранить в себе данные и методы, которые манипулируют этими данными?", "Инкапсуляция", "Инкапсуляция", "Наследование", "Полиморфизм", "Абстракция"],
+    ["Какая из следующих основных концепций ООП относится к способности группировать данные и методы, работающие с этими данными, в одну структуру?", "Инкапсуляция", "Инкапсуляция", "Полиморфизм", "Наследование", "Абстракция"],
+    ["Какой из следующих терминов описывает процесс создания новых объектов на основе существующего класса?", "Наследование", "Наследование", "Инкапсуляция", "Полиморфизм", "Абстракция"],
+    ["Что такое инкапсуляция в контексте объектно-ориентированного программирования?", "Скрытие деталей реализации объекта и предоставление только интерфейса для взаимодействия с ним", "Скрытие деталей реализации объекта и предоставление только интерфейса для взаимодействия с ним", "Возможность объекта вести себя по-разному в зависимости от контекста", "Возможность объекта наследовать свойства и методы другого объекта", "Группировка данных и методов"],
+    ["Что такое полиморфизм в объектно-ориентированном программировании?", "Способность объекта вести себя по-разному в зависимости от контекста", "Способность объекта вести себя по-разному в зависимости от контекста", "Группировка данных и методов", "Возможность объекта наследовать свойства и методы другого объекта", "Процесс создания новых объектов"],
+    ["Что такое наследование в объектно-ориентированном программировании?", "Возможность объекта наследовать свойства и методы другого объекта", "Возможность объекта наследовать свойства и методы другого объекта", "Способность объекта вести себя по-разному", "Скрытие деталей реализации", "Процесс создания новых объектов"],
+
+    // --- TextBox/Button/GroupBox и т.д. ---
+    ["Какое свойство элемента TextBox используется для ввода пароля, скрывая введенные символы, заменяя символом установленным системой?", "UseSystemPasswordChar", "UseSystemPasswordChar", "PasswordChar", "SystemSecretCodeChar", "AuthenticationCodeSystem"],
+    ["Какое свойство элемента TextBox используется для ввода пароля, скрывая введенные символы, заменяя символом установленным пользователем?", "PasswordChar", "PasswordChar", "PasscodeChar", "SecretCodeChar", "SecurityCodeChar"],
+    ["Какое свойство элемента TextBox используется для установки запрета ввода информации (только для чтения) в TextBox?", "ReadOnly", "ReadOnly", "readOnly", "InputOnly", "WriteOnly"],
+    ["Какое свойство элемента Button используется для изменение шрифта надписи на кнопке?", "Font", "Font", "Textstyle", "TextFont", "Typeface"],
+    ["Какое свойство элемента TextBox используется для установки многострочности компонента", "Multiline", "Multiline", "Multirow", "MultipleLlines", "MultisString"],
+    ["Какой элемент управления можно использовать для отображения многострочного текста?", "RichTextBox", "RichTextBox", "MaskedTextBox", "MaskedBox", "RichBox"],
+    ["Какой элемент позволяет контролировать ввод пользователя и проверять его автоматически на наличие ошибок.", "MaskedTextBox", "MaskedTextBox", "TextBox", "RichTextBox", "MaskedBox"],
+    ["Какой элемент управления используется для группировки других элементов управления на форме?", "GroupBox", "GroupBox", "PanelBox", "TabControl", "Container"],
+    ["Какой элемент интерфейса позволяет добавлять кнопки и меню в Windows Forms?", "ToolStrip", "ToolStrip", "MenuStrip", "StatusStrip", "ContextMenuStrip"],
+    ["Какое свойство элемента управления используется для задания ширины и высоты элемента?", "Size", "Size", "Dimensions", "Bounds", "Extent"],
+
+    // --- Методы класса, дружественные функции ---
+    ["Какое из терминов соответствует описанию: Метод класса - это ...", "функция, объявление которого размещено внутри определения класса", "функция, объявление которого размещено внутри определения класса", "Все перечисленные", "это блок кода, состоящий из ряда инструкций", "функция, список переменных которого неявно попадают все поля класса"],
+    ["К членам (переменным и функциям) класса доступ осуществляется через выбора ...", ". или ->", ". или ->", "[] (квадратная скобка)", ": двоеточие", "()"],
+    ["Укажите строку, где более точно дано определение дружественной функции", "Дружественная функция — это функция, которая имеет доступ к закрытым членам класса, и объявлено в любой части внутри класса", "Дружественная функция — это функция, которая имеет доступ к закрытым членам класса, и объявлено в любой части внутри класса", "Дружественная функция — это функция, которая имеет доступ к закрытым членам класса, и объявлено обязательно внутри класса в сегменте public", "Дружественная функция — это функция, которая имеет доступ к закрытым членам класса, и объявлено обязательно внутри класса в сегменте private", "Дружественная функция — это функция, которая имеет доступ к закрытым членам класса, и объявлено обязательно внутри класса в сегменте protected"],
+    ["Какие члены класса могут использоваться в дружественной функции?", "Все вышеперечисленные", "Все вышеперечисленные", "Только открытые (public)", "Только закрытые (private)", "Только защищенные (protected)"],
+    ["С какого ключевого слова начинается описание дружественной функции к классу", "friend", "friend", "pal", "mate", "ally"],
+    ["В какой строке правильно указано объявление (прототип) дружественной функции Funk к классу Rect", "friend int Funk(Rect);", "friend int Funk(Rect);", "int friend Funk(Rect ob);", "friend Funk(Rect);", "friend :: int Funk(Rect x);"],
+    ["В какой строке правильно указано объявление дружественного класса Konus к классу Krug", "class Krug { friend class Konus; };", "class Krug { friend class Konus; };", "class Konus{ friend class Krug; };", "class Krug { friend :: class Konus; };", "class Konus{ friend :: class Krug; };"],
+    ["Если класс A является другом B, а B является другом C, то", "это не означает, что A является другом C", "это не означает, что A является другом C", "это означает, что A является другом C", "это означает, что С является другом А", "это означает, что В является другом А"],
+    ["Сколько типов отношений возможны между классами", "2", "2", "5", "1", "6"],
+    ["Какую роль играют дружественные классы в C++?", "Они автоматически наследуют члены класса, к которому они дружественны", "Они автоматически наследуют члены класса, к которому они дружественны", "Они автоматически наследуют члены класса, к которому они дружественны", "Они могут изменять определение классов, к которым они дружественны", "Они обеспечивают возможность создания объектов одного класса внутри другого класса"],
+    ["Если класс имеет более одного конструктора, можно ли для разных элементов массива объектов класса использовать разные конструкторы", "да", "да", "нет", "только для одномерных массивов можно", "можно, если класс состоит из не более 3 числовых полей"],
+
+    // --- Классы (примеры кода) ---
+    ["Что выйдет на экран в результате выполнения: class A{ int x; public: void set(int a) { x=a;} int get() { return x;} }; int main() { A ob; ob.x=7/2; cout<<ob.x;}", "Ошибка компиляции", "Ошибка компиляции", "3.5", "3", "0"],
+    ["Что выйдет на экран: class A{ public: int x; void set(int a) { x=a;} int get() { return x;} }; int main() { A ob; ob.set(7/2); cout<<ob.x;}", "3", "3", "3.5", "Ошибка компиляции", "0"],
+    ["Что выйдет на экран: class F{ int x; public: void set(int a) { x=a;} int get() { return x;} }; int main() { F ob; ob.set(11./2); cout<<ob.x;}", "Ошибка компиляции", "Ошибка компиляции", "5", "5.5", "0"],
+    ["Что выйдет на экран: class F{ int x; public: void set(int a) { x=a;} int get() { return x;} }; int main() { F ob; ob.set(11./2); cout<<ob.get();}", "5", "5", "5.5", "1", "0"],
+    ["Что выйдет на экран: class F{ double x; public: void set(double a) { x=a;} double get() { return x;} }; int main() { F ob; ob.set(11./2); cout<<ob.get();}", "5.5", "5.5", "5", "1", "0"],
+    ["Что выйдет на экран: class F{ double x; public: F(){x=1;} void set(double a) { x=a;} int get() { return x;} }; int main() { F ob; double x=11./2; cout<<ob.get();}", "1", "1", "5.5", "5", "0"],
+
+    // --- Модификаторы доступа, конструкторы, деструкторы ---
+    ["Какой из следующих модификаторов доступа обеспечивает наивысший уровень инкапсуляции?", "private", "private", "public", "protected", "default"],
+    ["Какой модификатор доступа позволяет членам класса быть доступными только внутри того же класса?", "private", "private", "public", "protected", "default"],
+    ["Какой модификатор доступа предоставляет доступ к членам класса только внутри того же класса и для любых классов извне, являющихся наследниками данного класса?", "protected", "protected", "private", "public", "default"],
+    ["Какой модификатор доступа обеспечивает наибольшую видимость для членов класса?", "public", "public", "private", "protected", "default"],
+    ["Какой из следующих модификаторов доступа защищает данные от внешних воздействий с помощью инкапсуляции?", "protected и private", "protected и private", "private и public", "protected и public", "public"],
+    ["Конструктор класса -- это ...", "специальный метод класса, который предназначен для инициализации объектов класса некоторыми начальными значениями", "специальный метод класса, который предназначен для инициализации объектов класса некоторыми начальными значениями", "специальный метод класса, который служит для уничтожения объектов класса", "специальный метод класса, который предназначен для копирования значений из буфера памяти", "все ответы верны"],
+    ["Деструктор класса -- это ...", "специальный метод класса, который служит для уничтожения объектов класса. Используется для освобождения динамически выделенную память под объект класса", "специальный метод класса, который служит для уничтожения объектов класса. Используется для освобождения динамически выделенную память под объект класса", "специальный метод класса, который предназначен для инициализации объектов класса", "специальный метод класса, который предназначен для копирования значений из буфера памяти", "все ответы верны"],
+    ["Какой из утверждений не верно относительно для конструктора класса", "В классе может быть объявлен только один конструктор", "В классе может быть объявлен только один конструктор", "Имя класса и конструктора должно быть идентично", "При объявлении конструктора, тип данных возвращаемого значения не указывается", "Конструктор должен быть объявлен в разделе public"],
+    ["Какой из утверждений не верно относительно для деструктора класса", "Имя деструктора идентично имени конструктора, но с приставкой #", "Имя деструктора идентично имени конструктора, но с приставкой #", "В классе может быть объявлен только один деструктор", "У деструктора нет типа данных для возвращаемого значения", "Деструктору нельзя передавать никаких параметров"],
+    ["В какой части класса объявляются конструкторы и деструкторы?", "public", "public", "private", "protected", "в любой части"],
+    ["Сколько формальных параметров имеет деструктор класса?", "Не имеет", "Не имеет", "Один", "Два", "Два и больше"],
+    ["Сколько деструкторов можно объявлять в классе?", "Один", "Один", "Два", "Сколько угодно", "Три"],
+
+    // --- Графика (Graphics, Pen, Brush) ---
+    ["Какой класс отвечает для работы с пикселями (за графику)?", "Graphics", "Graphics", "Figura", "Form", "Brush"],
+    ["Какой нижеуказанный код предоставляет среду работы с пикселями?", "Graphics^ Figura = this->CreateGraphics();", "Graphics^ Figura = this->CreateGraphics();", "Graphics* Figura = this->CreateGraphics();", "Graphics^ Figura = this.CreateGraphics();", "Graphics^ Figura = this->CreateGraphic();"],
+    ["Укажите код, который создает карандаш красного цвета для рисования на форме фигуры?", "Pen^ Karandash = gcnew Pen(Color::Red);", "Pen^ Karandash = gcnew Pen(Color::Red);", "Pen Karandash = gcnew Pen(Color::Red);", "Pen^ Karandash = new Pen(Color::Red);", "Pen^ Karandash = gcnew Pen(Color:Red);"],
+    ["Укажите код, который создает твердую кисть для закрашивания фигуры в жёлтый цвет?", "Brush^ TKist = gcnew SolidBrush(Color::Yellow);", "Brush^ TKist = gcnew SolidBrush(Color::Yellow);", "Brush^ TKist = new SolidBrush(Color::Yellow);", "Brush^ TKist = gcnew Solidbrush(Color::Yellow.);", "Brush^ TKist = gcnew SolidBrash(Color::Yellow);"],
+    ["Укажите код, который рисует закрашенный в синий (Blue) цвет круг?", "Brush^ Karandash = gcnew Pen(Color::Blue); Figura->FillEllipse(Karandash, 50, 50, 250, 250);", "Brush^ Karandash = gcnew Pen(Color::Blue); Figura->FillEllipse(Karandash, 50, 50, 250, 250);", "Pen^ Karandash = gcnew Pen(Color::Blue); Figura->DrawEllipse(Karandash, 50, 50, 250, 250);", "Brush^ Karandash = gcnew Pen(Color::Blue); Figura->FillElipse(Karandash, 50, 50, 250, 150);", "Brush^ Karandash = gcnew Pen(Color::Blue); Figura->Drawellipse(Karandash, 50, 50, 250, 150);"],
+    ["Укажите код, который рисует овал?", "Figura->DrawEllipse(Karandash, 50, 50, 250, 150);", "Figura->DrawEllipse(Karandash, 50, 50, 250, 150);", "Figura->DrawElipse(Karandash, 50, 50, 250, 150);", "Figura->DrawEllipce(Karandash, 50, 50, 250, 150);", "Figura->Drawellipse(Karandash, 50, 50, 250, 150);"],
+    ["Укажите код, который рисует линию?", "Figura->DrawLine(Karandash, 50, 50, 200, 200);", "Figura->DrawLine(Karandash, 50, 50, 200, 200);", "Figura->DrawLines(Karandash, 50, 50, 200, 200);", "Figura->Drawline(Karandash, 50, 50, 200, 200);", "Figura->DrawVector(Karandash, 50, 50, 200, 200);"],
+    ["Укажите код, который рисует прямоугольник?", "Figura->DrawRectangle(Karandash, 50, 30, 150, 280);", "Figura->DrawRectangle(Karandash, 50, 30, 150, 280);", "Figura->Drawrectangle(Karandash, 50, 30, 150, 280);", "Figura->DrawRectungle(Karandash, 50, 30, 150, 280);", "Figura->DrawRectangl(Karandash, 50, 30, 150, 280);"],
+    ["Укажите код, который рисует сектор?", "Figura->DrawPie(Karandash, 30, 50, 300, 200, 180, 225);", "Figura->DrawPie(Karandash, 30, 50, 300, 200, 180, 225);", "Figura->DrawPei(Karandash, 30, 50, 300, 200, 180, 225);", "Figura->DrawPies(Karandash, 30, 50, 300, 200, 180, 225);", "Figura->DrawPeis(Karandash, 30, 50, 300, 200, 180, 225);"],
+    ["Укажите код, который выводит текст на пиксельной форме?", "Figura->DrawString(\"Все возможно!!!\", Font, TKist, 100, 100);", "Figura->DrawString(\"Все возможно!!!\", Font, TKist, 100, 100);", "Figura->DrawText(\"Все возможно!!!\", Font, TKist, 100, 100);", "Figura->ShowString(\"Все возможно!!!\", Font, TKist, 100, 100);", "Figura->ShowText(\"Все возможно!!!\", Font, TKist, 100, 100);"],
+
+    // --- RadioButton/CheckBox/ComboBox и т.д. ---
+    ["Какой элемент управления в Windows Forms C++ используется для представления независимого выбора, который можно включить или выключить?", "CheckBox", "CheckBox", "RadioButton", "Radiobutton", "listBox"],
+    ["Какой элемент управления в Windows Forms C++ используется независимого выбора, который можно включить или выключить, и полезен при выборе нескольких опций из набора?", "CheckBox", "CheckBox", "RadioButton", "Radiobutton", "listBox"],
+    ["Какое значение может принимать свойства CheckState кнопки RadioButton", "Checked (отмечен)", "Checked (отмечен)", "Все три значения", "Indeterminate", "Unchecked"],
+    ["Какое значение может принимать свойства CheckState кнопки CheckBox", "Одно из указанных ниже значений", "Одно из указанных ниже значений", "Checked", "Indeterminate", "Unchecked"],
+    ["Какой элемент управления в Windows Forms C++ используется для отображения списка", "ListBox", "ListBox", "CheckBox", "RadioButton", "NumericUpDown"],
+    ["Какой элемент управления в Windows Forms C++ используется для отображения выпадающего списка", "ComboBox", "ComboBox", "CheckBox", "RadioButton", "NumericUpDown"],
+    ["Какой элемент управления в Windows Forms C++ используется для работы с датами", "DateTimePicker", "DateTimePicker", "DataGridView", "Chart", "NumericUpDown"],
+    ["Какой элемент управления в Windows Forms C++ используется для отображения данных в виде графиков и диаграмм", "Chart", "Chart", "DataGridView", "DateTimePicker", "PictureBox"],
+    ["Какой элемент управления в Windows Forms C++ используется для отображения и управления табличными данными", "DataGridView", "DataGridView", "Chart", "DateTimePicker", "PictureBox"],
+    ["Какой элемент управления в Windows Forms C++ используется для отображения изображений", "PictureBox", "PictureBox", "Chart", "DateTimePicker", "DataGridView"],
+
+    // --- Примеры кода с кнопками и контейнерами ---
+    ["После нажатие кнопки Button ... private: System::Void button2_Click(...){ String^ st; std::vector<int> vc; if(vc.empty()) label1->Text = \"Контейнер vc (вектор) пустой!!!\"; else { st=Convert::ToString(vc.size()); label1->Text = \"Контейнер vc (вектор) состоит из \" + st + \" элементов\"; } }", "Контейнер vc (вектор) пустой!!!", "Контейнер vc (вектор) пустой!!!", "Контейнер vc (вектор) состоит из 4 элементов", "Контейнер vc (вектор) состоит из 0 элементов", "Контейнер vc (вектор) не пустой!!!"],
+    ["После нажатие кнопки Button ... private: System::Void button2_Click(...){ String^ st; std::deque<int> dc; if(dc.empty()) label1->Text = \"Контейнер dc (2-x стороной очередь) пустой!!!\"; else { st=Convert::ToString(dc.size()); label1->Text = \"Контейнер dc (2-x стороной очередь) состоит из \" + st + \" элементов\"; } }", "Контейнер dc (2-x стороной очередь) пустой!!!", "Контейнер dc (2-x стороной очередь) пустой!!!", "Контейнер dc (2-x стороной очередь) состоит из 4 элементов", "Контейнер dc (2-x стороной очередь) состоит из 0 элементов", "Контейнер dc (2-x стороной очередь) не пустой!!!"],
+    ["После нажатие кнопки Button ... private: System::Void button2_Click(...){ String^ st; std::deque<int> dc; dc.push_back(4); dc.push_back(7); dc.push_back(11); dc.push_back(8); if(dc.empty()) label1->Text = \"Контейнер dc (2-x стороной очередь) пустой!!!\"; else { st=Convert::ToString(dc.size()); label1->Text = \"Контейнер dc (2-x стороной очередь) состоит из \" + st + \" элементов\"; } }", "Контейнер dc (2-x стороной очередь) состоит из 4 элементов", "Контейнер dc (2-x стороной очередь) состоит из 4 элементов", "Контейнер dc (2-x стороной очередь) пустой!!!", "Контейнер dc (2-x стороной очередь) состоит из 0 элементов", "Контейнер dc (2-x стороной очередь) не пустой!!!"],
+    ["После нажатие кнопки Button ... private: System::Void button2_Click(...){ String^ st; std::vector<int> vc; vc.push_back(4); vc.push_back(7); vc.push_back(11); vc.push_back(8); if(vc.empty()) label1->Text = \"Контейнер vc (вектор) пустой!!!\"; else { st=Convert::ToString(vc.size()); label1->Text = \"Контейнер vc (вектор) состоит из \" + st + \" элементов\"; } }", "Контейнер vc (вектор) состоит из 4 элементов", "Контейнер vc (вектор) состоит из 4 элементов", "Контейнер vc (вектор) пустой!!!", "Контейнер vc (вектор) состоит из 0 элементов", "Контейнер vc (вектор) не пустой!!!"],
+    ["После нажатие кнопки Button ... private: System::Void button2_Click(...){ String^ st; std::list<int> ls; ls.push_back(4); ls.push_front(5); ls.push_front(7); ls.push_back(11); if(ls.empty()) label1->Text = \"Контейнер ls (список) пустой!!!\"; else { st=Convert::ToString(ls.size()); label1->Text = \"Контейнер ls (список) состоит из \" + st + \" элементов\"; } }", "Контейнер ls (список) состоит из 4 элементов", "Контейнер ls (список) состоит из 4 элементов", "Контейнер ls (список) пустой!!!", "Контейнер ls (список) состоит из 0 элементов", "Контейнер ls (список) не пустой!!!"],
+    ["После нажатие кнопки Button ... private: System::Void button2_Click(...){ String^ st; std::list<int> ls; if(ls.empty()) label1->Text = \"Контейнер ls (список) пустой!!!\"; else { st=Convert::ToString(ls.size()); label1->Text = \"Контейнер ls (список) состоит из \" + st + \" элементов\"; } }", "Контейнер ls (список) пустой!!!", "Контейнер ls (список) пустой!!!", "Контейнер ls (список) состоит из 4 элементов", "Контейнер ls (список) состоит из 0 элементов", "Контейнер ls (список) не пустой!!!"],
+    ["При выборе Radiobutton1 и нажатии кнопки ... label1->Text = \"Самый популярный язык программирования - это \" + st;", "Самый популярный язык программирования - это C++", "Самый популярный язык программирования - это C++", "Самый популярный язык программирования - это C++!!!", "C++", "Самый популярный язык программирования - это Python"],
+    ["При выборе Radiobutton2 ... label1->Text = \"Самый популярный язык программирования - это \" + st;", "Самый популярный язык программирования - это Python", "Самый популярный язык программирования - это Python", "Самый популярный язык программирования - это Java!!!", "это Python", "Самый популярный язык программирования - это C++"],
+    ["При выборе 1-го языка из ComboBox ... label1->Text = \"Самый популярный язык программирования - это \" + st;", "Самый популярный язык программирования - это С++", "Самый популярный язык программирования - это С++", "Самый популярный язык программирования - это C++!!!", "это Java", "Самый популярный язык программирования - это Python"],
+    ["При выборе 2-го языка из ComboBox ... label1->Text = \"Самый популярный язык программирования - это \" + st;", "Самый популярный язык программирования - это Python", "Самый популярный язык программирования - это Python", "Самый популярный язык программирования - это C++!!!", "это Java", "Самый популярный язык программирования - это Java"],
+
+    // ========== ТЕСТЫ ПРОГРАММИРОВАНИЕ 2 @rus_tuit.docx ==========
+    // --- Вопросы 1-40 (арифметика, циклы, условия) ---
+    ["Определить значение выражения: 5 + 15 / 5 * 2", "11", "11", "8", "6.5", "6"],
+    ["Определить, что будет выведено на экран: int x=3; if(x>7 || x<5) if(x<6 && x>1) if(!(x>2)) printf(\"1\"); else printf(\"2\"); else printf(\"3\"); else printf(\"4\");", "2", "2", "14", "1", "3"],
+    ["Укажите при каких значениях int x выражение истинно: x<3 && x<=5 || x>4", "(-∞, 2] ∪ [5, +∞)", "(-∞, 2] ∪ [5, +∞)", "всегда ложно", "[5, +∞)", "(-∞, 2]"],
+    ["Определить значение выражения: 1 - 2 * -3", "7", "7", "3", "5", "-5"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=1; while(i*i<81){ ... i+=4; }", "5", "5", "2", "9", "4"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=0; do { i++; ... } while(i/2 > 0);", "1", "1", "4", "3", "бесконечный цикл"],
+    ["Определить сколько раз будет выполнено тело цикла: int I; for(I=-8; I%3 <= -2; ++I){ ... }", "1", "1", "2", "3", "бесконечный цикл"],
+    ["Определить значение переменной x после выполнения фрагмента: int x=1, y=0; while(y<10) y=3*(++x)+1;", "4", "4", "3", "5", "бесконечный цикл"],
+    ["Определить значение выражения: 3 + 15 / 3 * 5", "28", "28", "30", "40", "1.2"],
+    ["Определить значение выражения: 3 - 4 * -2", "11", "11", "2", "-14", "-11"],
+    ["Определить, что будет выведено на экран: int x=3; if(x>7 || x<5) if(x<6 && x>1) if((x>2)) printf(\"1\"); else printf(\"2\"); else printf(\"3\"); else printf(\"4\");", "1", "1", "14", "3", "2"],
+    ["Укажите при каких значениях int X выражение истинно: X < 3 || X >= 4 && X < 5", "(-∞, 2] ∪ {4}", "(-∞, 2] ∪ {4}", "X=4", "[4, +∞)", "(-∞, 2]"],
+    ["Определить сколько раз будет выполнено тело цикла: int I; for(I=-7; I%3 < -1; ++I){ ... }", "1", "1", "2", "3", "бесконечный цикл"],
+    ["Определить значение переменной x после выполнения: int x=1,y=0; while(y<12) y=3*(++x)+1;", "5", "5", "4", "3", "бесконечный цикл"],
+    ["Определить сколько раз будет выполнено тело цикла: int I=1; while(I*(I-1)<120){ ... I+=5; }", "3", "3", "1", "2", "4"],
+    ["Укажите при каких значениях int x выражение истинно: x > 5 || x <= 4 && x > 3", "{4} ∪ [6, +∞)", "{4} ∪ [6, +∞)", "(-∞, 4] ∪ [6, +∞)", "(-∞, 4]", "[6, +∞)"],
+    ["Определить значение выражения: 2 - 3 * -1", "5", "5", "-5", "1", "-2"],
+    ["Определить сколько раз будет выполнено тело цикла: int i; for(i=-8; i%3 <= -1; ++i){ ... }", "2", "2", "1", "3", "бесконечный цикл"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=0; do { i++; ... } while(2/i > 0);", "1", "1", "2", "3", "бесконечный цикл"],
+    ["Определить значение переменной x после выполнения: int x=0,y=0; while(y<6) y=2*(++x)+1;", "3", "3", "4", "5", "2"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=1; while(i*i<50){ ... i+=3; }", "3", "3", "4", "2", "1"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=1; while(i*(i-1)<81){ ... i*=3; }", "3", "3", "2", "4", "1"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=0; do { i++; ... } while(1/i > 0);", "1", "1", "2", "3", "бесконечный цикл"],
+    ["Определить что будет выведено на экран: int x=5; if(x<2 || x>4) if(x>4 && x<6) if(!(x<5)) printf(\"1\"); else printf(\"2\"); else printf(\"3\"); else printf(\"4\");", "2", "2", "1", "3", "4"],
+    ["Определить значение переменной x после выполнения: int x=3,y=0; while(y<=7) y=2*(x++)-1;", "7", "7", "6", "5", "бесконечный цикл"],
+    ["Определить значение переменной y после выполнения: int x=3,y=0; while(y<=7) y=2*(x++)-1;", "13", "13", "9", "11", "бесконечный цикл"],
+    ["Определить что будет выведено на экран: int x=2; if(x<4 || x>6) if(x>2 && x<8) if(!(x<5)) printf(\"1\"); else printf(\"2\"); else printf(\"3\"); else printf(\"4\");", "2", "2", "3", "1", "4"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=0; do { i++; ... } while(i/3 > 0);", "3", "3", "4", "1", "бесконечный цикл"],
+    ["Определить сколько раз будет выполнено тело цикла: int i=1; while(i*i<64){ ... i*=2; }", "3", "3", "4", "2", "1"],
+    ["Чему равно заданное число 2.18e-6?", "2.18*10^-6", "2.18*10^-6", "0.0000218", "2.18*10^-5", "2.18*e^-6"],
+    ["Какому заголовку файла (библиотеке) относится функция getch()?", "<conio.h>", "<conio.h>", "<stdlib.h>", "<math.h>", "<iostream>"],
+    ["Какой тип данных принимает действительные числа, длина которых не превышает 32 битов?", "float", "float", "double", "long", "int"],
+    ["Какой тип данных принимает действительные числа, длина которых не превышает 64 битов?", "double", "double", "long double", "long", "float"],
+    ["Какой знак используется для потока вывода информации?", "<<", "<<", ">>", ">=", "=>"],
+    ["Каким словом определяется условный оператор?", "if", "if", "for", "switch", "while"],
+    ["Какой оператор стирает динамическую память?", "delete", "delete", "new", "erase", "close"],
+    ["while(выражение_условие){...} что означает использование данной конструкции?", "Цикл, который сначала проверяет условие", "Цикл, который сначала проверяет условие", "Цикл, который проверяет условие после решения задачи", "Параметрический цикл", "Сборник множественной альтернативы"],
+    ["Определите строку, в котором правильно указаны операторы использующиеся в языке C++", "cout, getch, return", "cout, getch, return", "while, NULL, type", "cin, gets, char", "while, do while, type"],
+    ["Какой результат выйдет на экран после выполнения: #include <stdio.h> int k; int main(){ k=123; printf(\"%d\", k++); return 0; }", "123", "123", "124", "122", "121"],
+    ["В данной программе сколько раз выйдет слово 'Привет': #include <stdio.h> int main(){ int a=45, b=a/10+3; for(int I=0; I<2; I++) for(int j=0; j<-2; j++) puts(\"Привет\"); return 0; }", "0", "0", "9", "12", "10"],
+
+    // --- Вопросы 41-60 (строки) ---
+    ["Какая из следующих функций добавляет одну строку в конец другой?", "strcat();", "strcat();", "append();", "stradd();", "stringadd();"],
+    ["Какая из следующих функций считывает 100 символов из входного потока в строку x?", "cin.getline(x, 100, '\\n');", "cin.getline(x, 100, '\\n');", "cin.getline(x, 100, 'n');", "readline(x,100,'n');", "readline(100)"],
+    ["Какая из следующих функций сравнивает две строки?", "strcmp();", "strcmp();", "Stringcompare();", "compare();", "cmp();"],
+    ["Укажите корректное определение строковой переменной", "string mystr;", "string mystr;", "string mystr[20];", "char mystr[20];", "string[20] mystr;"],
+    ["Объявлена переменная char a; Какое из следующих выражений не верно?", "a = \"3\";", "a = \"3\";", "a = '3';", "a = 3;", "int a=3"],
+    ["Словосочетание 'Privet shkola' может быть сохранено в символьном массиве размером n элементов. Укажите чему равно n?", "13", "13", "14", "10", "6"],
+    ["Как объявить строку?", "char satr[] = \"Institut\";", "char satr[] = \"Institut\";", "char satr = \"Institut\";", "char &satr[] = \"Institut\";", "a va c javoblar o'g'ri"],
+    ["Что из следующего является правильной строкой ввода?", "char matn[15]; gets(matn);", "char matn[15]; gets(matn);", "char matn[15]; cin.getline(matn);", "char matn[15]; cin.getline(matn,15);", "char matn[15]; getline(cin, matn);"],
+    ["Какое значение отображается на экране в результате выполнения: int s=0,m=0; char matn[]=\"2019-2020 fanninignomi C++ da programmalashasoslari\"; for(int i=0;i<strlen(matn);i++) if(isdigit(matn[i])) s++; else if(isalpha(matn[i])) m++; cout<<s<<\"\\t\"<<m;", "8 36", "8 36", "6 32", "5 29", "6 23"],
+    ["Какое значение отображается на экране: string s=\"Shkoli\", s1=\"_Deti\", s3=\"Student\"; s.swap(s1); s.erase(0,4); s1.assign(s); cout<<s3.append(s1);", "Studenti", "Studenti", "Shkoli", "Deti", "DetiStudent"],
+    ["Какова функция функции tolower()?", "Заменяет в символьном массиве верхний регистр на нижний", "Заменяет в символьном массиве верхний регистр на нижний", "Заменяет нижний регистр на верхний", "Заменяет все буквы на цифры", "Заменяет все цифры на буквы"],
+    ["Какова функция функции toupper()?", "Заменяет в символьном массиве нижний регистр на верхний", "Заменяет в символьном массиве нижний регистр на верхний", "Заменяет верхний регистр на нижний", "Заменяет все буквы на цифры", "Заменяет все цифры на буквы"],
+    ["Какой заголовочный файл нужно включить для tolower() и toupper()?", "<ctype.h>", "<ctype.h>", "<stdlib.h>", "<cstring.h>", "<conio.h>"],
+    ["Какое значение отображается: char s[]=\"Toshkent Axborot Texnologiyalari Universiteti talabalari\"; char c='a'; int k=0; for(int i=0;i<strlen(s);i++) if(s[i]==c) k++; cout<<k;", "6", "6", "4", "5", "7"],
+    ["Выберите правильный вариант объявления строковой величины А, состоящей из 25 символов", "string A[25];", "string A[25];", "string A;", "A:array[1..25] of string;", "—"],
+    ["Допустим, у нас есть код char arr[8]; cin>>arr; И в массив arr мы попытались записать HelloWorld. Что в действительности будет содержать массив arr?", "HelloWo", "HelloWo", "Hello W", "HelloWorld", "Hello"],
+    ["Каким символом завершается С++-строка?", "\\0", "\\0", "''", "'.'", "'n'"],
+    ["Какой стандартный код используется для символьных данных типа char в С++?", "Код ASCII", "Код ASCII", "Код cp-1251", "Код UTF-8", "Код ASCI"],
+    ["Какое значение отображается: string s1=\"A\",s2=\"B\",s3=\"C\"; int i=1; s2.insert(i,s3); s2.append(s3); i=3; s2.insert(i,s2); s1.erase(1,2); s3=s2; cout<<s3;", "BCCBCC", "BCCBCC", "ABC", "CBBB", "BCCA"],
+    ["Какое значение отображается: string s1=\"A\",s2=\"B\",s3=\"C\"; int i=1; s1.insert(i,s3); s1.append(s2); s2.insert(i,s3); s1.erase(1,2); s3=s1+s2; cout<<s3;", "ACB", "ACB", "ABC", "CAB", "BBC"],
+
+    // --- Вопросы 61-90 (типы, операторы, switch) ---
+    ["Оператор форматирования в точном размере это...", "fixed", "fixed", "showpoint", "scientific", "internal"],
+    ["Какое ключевое слово можно использовать для объявления переменной, принимающей символьный тип?", "char", "char", "void", "bool", "int"],
+    ["Каким будет результат программы: int main(){ int a,b,c; double d; a=0; b=2; c=1; d=(a+b)/c+pow(b,a)/b; cout<<d<<endl; return 0; }", "2", "2", "2.5", "0", "25"],
+    ["Для чего предназначен оператор goto?", "Для перехода", "Для перехода", "Для объявления", "Для присвоения", "Для сохранения"],
+    ["Переменные, которые могут работать как в основной программе, так и в других функциях это...?", "Глобальные переменные", "Глобальные переменные", "Функции с параметрами", "Переменные без параметров", "Локальные переменные"],
+    ["int a; какое выражение преобразует переменную а в тип double.", "(double)a", "(double)a", "double(int_a)", "int(double a)", "double(int.a)"],
+    ["Укажите оператор, который измеряет объем памяти", "sizeof", "sizeof", "typdef", "define", "struct"],
+    ["Укажите способ удаления строки", "erase", "erase", "back", "assign", "front"],
+    ["Какой тип данных нельзя установить непосредственно в логическом смысле на языке C++?", "string", "string", "__int64", "char", "int"],
+    ["Укажите тип данных, обозначающую строку", "string", "string", "int", "char", "float"],
+    ["Укажите правильное определение переменной строки", "string mystr;", "string mystr;", "string mystr[20];", "char mystr[20];", "string[20] mystr;"],
+    ["Какой заголовочный файл используется для вызова функции Isalpha()?", "ctype.h", "ctype.h", "string.h", "ifstream.h", "conio.h"],
+    ["Какая из следующих функций сравнивает две строки?", "compare();", "compare();", "stringcompare();", "cmp();", "strcomp();"],
+    ["Строка это --", "Последовательность символов", "Последовательность символов", "Последовательность столбцов", "Последовательность вывода", "Последовательность ввода"],
+    ["Какие переменные называются переменными, объявленными внутри основной функции на C/C++?", "Локальные переменные", "Локальные переменные", "Глобальные переменные", "Целые переменные", "Действительные переменные"],
+    ["Определите неправильно указанную строку?", "A!%5", "A!%5", "A=5", "A==5", "A!=5"],
+    ["Определите предназначения ключевого слова include?", "Выводит библиотеки", "Выводит библиотеки", "Специальное слово", "Описывается в начале программы", "Вызывает внутренние приказы"],
+    ["Какая библиотека используется для оператора scanf в С++?", "stdio.h", "stdio.h", "conio.h", "stdlib.h", "iostream"],
+    ["С помощью, какой конструкции определяется условный оператор?", "if (условие) {...} else {...}", "if (условие) {...} else {...}", "while (условие) {...}", "else (условие) else {...}", "if (условие) else {...}"],
+    ["Какой оператор предназначен для множественного альтернативного выбора?", "switch", "switch", "throw", "public", "struct"],
+    ["Оператором условного перехода в С++ является оператор ...", "if", "if", "switch", "goto", "continue"],
+    ["Оператором безусловного перехода в С++ является оператор ...", "goto", "goto", "if", "switch", "break"],
+    ["Оператором выбора С++ является оператор ...", "switch", "switch", "goto", "if", "return"],
+    ["Какой служебный знак ставится после оператора case?", ":", ":", ".", "-", ";"],
+    ["Как написать выражение: «Если переменная index больше size то мы инкрементируем переменную count»?", "if (index>size) count++;", "if (index>size) count++;", "if index>size { count++; }", "if (index>=size) { ++count; }", "if (index>size) { count++ }"],
+    ["Укажите правильный вариант записи условного оператора в языке C++", "if (x>0) y=sqrt(x);", "if (x>0) y=sqrt(x);", "IF (x>0) Do y:=sqrt(x)", "if y=sqrt(x) then x>0", "IF x>0 then y:=sqrt(x);"],
+    ["В результате выполнения фрагмента: int i=2; switch(i){ case 1: i+=2; break; case 2: i*=3; break; case 6: i/=2; break; default: ; }", "переменная i примет значение 6", "переменная i примет значение 6", "переменная i примет значение 3", "тело switch не меняет i", "переменная i примет значение 1"],
+    ["Выберите вариант ответа, в котором условный оператор записан не верно?", "if (x=1) {y=1} else y=2;", "if (x=1) {y=1} else y=2;", "if (x==1) y=1; else y=2;", "if (x==1) {y=1;} else {y=2; }", "if (x==1) y=1; else {y=2;}"],
+    ["В результате выполнения фрагмента: char sim='3'; switch(sim){ case '2': cout<<\"neud\"; break; case '3': cout<<\"udov\"; break; case '4': cout<<\"xor\"; break; case '5': cout<<\"otl\"; break; default: cout<<\"oshibka vvoda\"; }", "udov", "udov", "udovxorotl oshibka vvoda", "oshibka vvoda", "oshibka"],
+    ["Какое из высказываний верное?", "Ветвь default может располагаться в любом месте switch или отсутствовать", "Ветвь default может располагаться в любом месте switch или отсутствовать", "Ветвь default обязательна и должна быть в конце", "Ветвь default должна быть в конце или отсутствовать", "Ветвь default должна быть в начале"],
+
+    // --- Вопросы 91-120 (циклы) ---
+    ["Какое из высказываний верное?", "Для написания блока кода case в switch использование фигурных скобок не обязательно", "Для написания блока кода case в switch использование фигурных скобок не обязательно", "В switch блоки case всегда должны быть в {} ", "Если операторов несколько (>1) то они берутся в {} ", "Правильного высказывания нет"],
+    ["В результате выполнения: int x=1,y=3; if(--x && ++y) y+=3; cout<<\"\\n x+y=\"<<x+y<<endl;", "x+y=3", "x+y=3", "x+y=4", "x+y=7", "x+y=9"],
+    ["В результате выполнения: char sim='4'; switch(sim){ case '2': cout<<\"ne sdal ekzamen\"; break; case '3'...'5': cout<<\"sdal eksamen\"; break; default: cout<<\"oshibka vvoda\"; }", "sdal eksamen", "sdal eksamen", "ne sdal ekzamen", "oshibka vvoda", "oshibka"],
+    ["В результате выполнения: int x=1,y=3; if(--x || ++y) y+=3; cout<<\"\\n x+y=\"<<x+y<<endl;", "x+y=6", "x+y=6", "x+y=4", "x+y=7", "x+y=9"],
+    ["В результате выполнения: char sim='3'; switch(sim){ case '2': cout<<\"ne sdal ekzamen\"; break; case '5'...'3': cout<<\"sdal eksamen\"; break; default: cout<<\"oshibka vvoda\"; }", "oshibka vvoda", "oshibka vvoda", "ne sdal ekzamen", "oshibka", "sdal eksamen"],
+    ["В результате выполнения: int x,y; x=2; y=3; if(y/x>1) y+=2; else if(y/x<1) y-=2; else y*=2; cout<<\"\\n y=\"<<y<<endl;", "y=6", "y=6", "y=5", "y=1", "y=11"],
+    ["В результате выполнения: char sim='2'; switch(sim){ case '2': cout<<\"neud\"; case '3': cout<<\"udov\"; case '4': cout<<\"xor\"; case '5': cout<<\"otl\"; default: cout<<\"oshibka vvoda\"; }", "neududovxorotloshibka vvoda", "neududovxorotloshibka vvoda", "neud", "oshibka vvoda", "oshibka"],
+    ["Что напечатает: int x=1,y=3; if(x++ && y++) y+=2; cout<<\"\\n x+y=\"<<x+y<<endl;", "x+y=7", "x+y=7", "x+y=8", "x+y=4", "x+y=6"],
+    ["В результате выполнения: int x,y; x=2; if(x=1) y=x+1; else y=x-2; cout<<\"\\n y=\"<<y<<endl;", "y=2", "y=2", "y=3", "y=0", "y=1"],
+    ["В результате выполнения: int i=2; switch(i){ case 1: i+=2; case 2: i*=3; case 6: i/=2; default: ; }", "переменная i примет значение 3", "переменная i примет значение 3", "переменная i примет значение 6", "тело switch не меняет i", "переменная i примет значение 1"],
+    ["Укажите правильный вариант циклического оператора используемого в языке C++", "for, while, do while", "for, while, do while", "cout, getch, return", "while, NULL, type", "cin, gets, char"],
+    ["while(условие){...} укажите значение применения конструкции?", "Проверяющий цикл для предусловия", "Проверяющий цикл для предусловия", "Условный цикл после операции", "Многоальтернативный оператор", "Параметрический цикл"],
+    ["Если operator continue внутри оператора цикла, тогда:", "передает управление на начало следующей итерации", "передает управление на начало следующей итерации", "передает управление до конца предыдущей итерации", "передает управление итерации, которая следует за знаком", "передаёт управление после циклического оператора"],
+    ["Чему будет равен a: int a=10,n=6; for(int i=0;i<n;i++) a+=i;", "25", "25", "30", "35", "20"],
+    ["Укажите правильную строку, где указан циклический оператор: 1.if<условие> then<oper1> else<oper2> 2.for(int i=1;i<10;i++) if(a<0) break; else cin>>a; 3.for(цикл_par:=исходное_знач; условие;) <operator> 4.for(;;) if(a<0) break; else {s+=a; cin>>a;} 5.for(цикл_парам:=исходное_знач) downto конечное_знач; do <operator>", "2,4", "2,4", "2,3", "3,4", "1,2"],
+    ["Какой результат выйдет на экран: int s=0; for(int i=0; i<=7; i++) s=s+i; cout<<s;", "28", "28", "22", "25", "20"],
+    ["После выполнения программы чему будет равно k? k=1; while(k<10) k=k+k; cout<<k;", "16", "16", "4", "32", "8"],
+    ["Укажите правильный вариант, где указан цикл оператора постусловия", "do while", "do while", "for", "switch", "while"],
+    ["При помощи какой конструкции рекомендуется параметрический цикл?", "for(выражение_1; условие; выражение_2){...}", "for(выражение_1; условие; выражение_2){...}", "do {...} while(условие)", "while(условие){...}", "if(условие){...} else{...}"],
+    ["Найдите значение x после выполнения: int x=0,y=0; while(y<10) y=3*(++x)+1;", "3", "3", "1", "4", "бесконечный цикл"],
+    ["Укажите верное количество видов циклического алгоритма?", "3 вида.", "3 вида.", "2 вида.", "1 вида.", "4 вида."],
+    ["Определите сколько раз будет выполнено тело цикла: int i=0; do { i++; ... } while(i/3>0);", "3", "3", "1", "2", "10"],
+    ["Какой оператор не позволяет переключаться с одного константного выражения на другое?", "break;", "break;", "endl;", "Stop;", "Точка_запятая"],
+    ["Что эквивалентно переменной после выполнения: int a; for(a=0; a<10; a++) {}", "10", "10", "9", "1", "11"],
+    ["Что из нижеперечисленного не является циклическим оператором в C++?", "repeat until", "repeat until", "do while", "for", "while"],
+    ["Любое тело цикла длится до своего состояния, когда ...", "будет ложным", "будет ложным", "в цикле нет условия", "верно", "программа не выйдет"],
+    ["Определите сколько раз будет выполнено тело цикла: int i; for(i=7; i%3>1; --i){ ... }", "1", "1", "2", "3", "бесконечный цикл"],
+    ["При помощи какого оператора выделяется динамическая память?", "new", "new", "delete", "continue", "break"],
+    ["Найдите значение s: while(n>0){ s*=n; n-=2;} n=5", "15", "15", "20", "5", "25"],
+
+    // --- Вопросы 121-140 (массивы) ---
+    ["... - это упорядоченные в памяти элементы одного и того же типа, имеющие имя.", "Массив", "Массив", "Структура", "Объединение", "Переменные"],
+    ["Укажите правильное объявление массива!", "int anarray[10];", "int anarray[10];", "anarray{10};", "array an array[10];", "int anarray;"],
+    ["Какое значение будет напечатано: int sum=0; int array[3][3]={{0,1,2},{3,4,5},{6,7,8}}; for(int i=0; i<3; ++i){ for(int j=2; j<3; j++){ sum += array[i][j]; } } cout<<sum;", "15", "15", "36", "21", "9"],
+    ["В каком из вариантов ответов объявлен двумерный массив?", "int anarray[20][20];", "int anarray[20][20];", "array anarray[20][20];", "char array[20];", "int array[20,20];"],
+    ["Что находит данная программа? #include<iostream> int main(){ int i,res=0,f[20]; for(i=0;i<20;i++) scanf(\"%d\",&f[i]); for(i=1;i<20;i++) if(f[res]>f[i]) res=i; printf(\"%d\",res); return 0; }", "Индекс минимального элемента", "Индекс минимального элемента", "Индекс максимального элемента", "Максимальный элемент", "Минимальный элемент"],
+    ["Если одномерный массив в языке С++ состоит из N элементов, то его индекс может принимать значения", "от 0 до N-1", "от 0 до N-1", "от 1 до N", "от 0 до N", "от 1 до N+1"],
+    ["В одной из следующих строк, записанных на языке С++, выполняется обращение к седьмому элементу массива, размер массива равен 10?", "mas[6];", "mas[6];", "mas(7);", "mas[7];", "mas 8;"],
+    ["В каком ответе проведена часть программы для нахождения суммы отрицательных элементов массива.", "long sum=0; for(unsigned int i=0; i<ARRSIZE; i++){ if(ary[i]<0){ sum+=ary[i]; } } cout<<sum;", "long sum=0; for(unsigned int i=0; i<ARRSIZE; i++){ if(ary[i]<0){ sum+=ary[i]; } } cout<<sum;", "long product=1; for(...) if(ary[i]<0) product*=ary[i];", "long sum=0; for(i=0;i<ARRSIZE;i+=2) sum+=ary[i];", "long sum=0; for(i=1;i<ARRSIZE;i+=2) sum+=ary[i];"],
+    ["В каком ответе проведена часть программы для нахождения произведения отрицательных элементов массива", "long product=1; for(unsigned int i=0; i<ARRSIZE; i++){ if(ary[i]<0){ product*=ary[i]; } } cout<<product;", "long product=1; for(unsigned int i=0; i<ARRSIZE; i++){ if(ary[i]<0){ product*=ary[i]; } } cout<<product;", "long sum=0; for(...) if(ary[i]<0) sum+=ary[i];", "long sum=0; for(i=0;i<ARRSIZE;i+=2) sum+=ary[i];", "long sum=0; for(i=1;i<ARRSIZE;i+=2) sum+=ary[i];"],
+    ["В каком ответе проведена часть программы для нахождения суммы элементов массива с чётными индексами", "long sum=0; for(unsigned int i=0; i<ARRSIZE; i+=2){ sum+=ary[i]; } cout<<sum;", "long sum=0; for(unsigned int i=0; i<ARRSIZE; i+=2){ sum+=ary[i]; } cout<<sum;", "long product=1; for(...) if(ary[i]<0) product*=ary[i];", "long sum=0; for(...) if(ary[i]<0) sum+=ary[i];", "long sum=0; for(i=1;i<ARRSIZE;i+=2) sum+=ary[i];"],
+    ["В каком ответе проведена часть программы для нахождения суммы элементов массива с нечётными индексами.", "long sum=0; for(unsigned int i=1; i<ARRSIZE; i+=2){ sum+=ary[i]; } cout<<sum;", "long sum=0; for(unsigned int i=1; i<ARRSIZE; i+=2){ sum+=ary[i]; } cout<<sum;", "long product=1; for(...) if(ary[i]<0) product*=ary[i];", "long sum=0; for(i=0;i<ARRSIZE;i+=2) sum+=ary[i];", "long sum=0; for(...) if(ary[i]<0) sum+=ary[i];"],
+    ["Индексация массивов в языке С++ начинается", "с нуля", "с нуля", "с единицы", "с любого индекса", "нет правильных ответов"],
+    ["В каком ответе проведена часть программы для нахождения минимального по модулю элемента массива.", "int min=abs(a[0]); for(int i=1;i<n;i++){ if(min>abs(a[i])) min=a[i]; } cout<<\"abs min: \"<<min;", "int min=abs(a[0]); for(int i=1;i<n;i++){ if(min>abs(a[i])) min=a[i]; } cout<<\"abs min: \"<<min;", "int imax=0,imin=0; for(...) if(a[i]>a[imax]) imax=i; if(a[i]<a[imin]) imin=i; cout<<imin+imax;", "int imin=-1; for(...) if((!(a[i]%2) && (imin==-1 || a[imin]>a[i])) imin=i;", "int max=0; for(...) if(a[i]>max) max=a[i];"],
+    ["В каком ответе проведена часть программы для нахождения суммы номеров минимального и максимального элементов.", "int imax=0,imin=0; for(int i=1;i<n;i++){ if(a[i]>a[imax]) imax=i; if(a[i]<a[imin]) imin=i; } cout<<\"answer: \"<<imin+imax;", "int imax=0,imin=0; for(int i=1;i<n;i++){ if(a[i]>a[imax]) imax=i; if(a[i]<a[imin]) imin=i; } cout<<\"answer: \"<<imin+imax;", "int min=abs(a[0]); for(...) if(min>abs(a[i])) min=a[i];", "int imin=-1; for(...) if((!(a[i]%2) && (imin==-1 || a[imin]>a[i])) imin=i;", "int max=0; for(...) if(a[i]>max) max=a[i];"],
+    ["В каком ответе проведена часть программы для нахождения наименьшего четного элемента массива, а если такого нет, то печатающий первый элемент.", "int imin=-1; for(int i=0;i<n;i++){ if((!(a[i]%2) && (imin==-1 || a[imin]>a[i]))) imin=i; } if(imin==-1) cout<<a[0]; else cout<<a[imin];", "int imin=-1; for(int i=0;i<n;i++){ if((!(a[i]%2) && (imin==-1 || a[imin]>a[i]))) imin=i; } if(imin==-1) cout<<a[0]; else cout<<a[imin];", "int min=abs(a[0]); for(...) if(min>abs(a[i])) min=a[i];", "int imax=0,imin=0; for(...) if(a[i]>a[imax]) imax=i; if(a[i]<a[imin]) imin=i;", "int max=0; for(...) if(a[i]>max) max=a[i];"],
+    ["В каком ответе проведена часть программы для нахождения наибольшего элемента массива.", "int max=0; for(int i=1;i<n;i++){ if(a[i]>max) max=a[i]; } cout<<\"max: \"<<max;", "int max=0; for(int i=1;i<n;i++){ if(a[i]>max) max=a[i]; } cout<<\"max: \"<<max;", "int min=abs(a[0]); for(...) if(min>abs(a[i])) min=a[i];", "int imax=0,imin=0; for(...) if(a[i]>a[imax]) imax=i; if(a[i]<a[imin]) imin=i;", "int imin=-1; for(...) if((!(a[i]%2) && (imin==-1 || a[imin]>a[i])) imin=i;"],
+    ["В каком ответе проведена часть программы для нахождения суммы отрицательных элементов массива", "int sum=0; for(int i=0;i<n;i++){ if(a[i]<0){ sum+=a[i]; } } if(!sum) cout<<\"no numbers < 0\"; else cout<<\"sum = \"<<sum;", "int sum=0; for(int i=0;i<n;i++){ if(a[i]<0){ sum+=a[i]; } } if(!sum) cout<<\"no numbers < 0\"; else cout<<\"sum = \"<<sum;", "int sum=0; for(...) if(a[i]>0) sum+=a[i];", "int p=1; for(i=1;i<n;i+=2) p*=a[i];", "int p=1; for(i=0;i<n;i++) if(i%2==1) p*=a[i];"],
+    ["В каком ответе проведена часть программы для нахождения суммы положительных элементов массива", "int sum=0; for(int i=0;i<n;i++){ if(a[i]>0){ sum+=a[i]; } } if(!sum) cout<<\"no numbers > 0\"; else cout<<\"sum = \"<<sum;", "int sum=0; for(int i=0;i<n;i++){ if(a[i]>0){ sum+=a[i]; } } if(!sum) cout<<\"no numbers > 0\"; else cout<<\"sum = \"<<sum;", "int sum=0; for(...) if(a[i]<0) sum+=a[i];", "int p=1; for(i=1;i<n;i+=2) p*=a[i];", "int p=1; for(i=0;i<n;i++) if(i%2==1) p*=a[i];"],
+    ["В каком ответе проведена часть программы для нахождения произведения элементов массива с четными номерами.", "int p=1; for(int i=0; i<n; i+=2){ p*=a[i]; } cout<<\"answer: \"<<p;", "int p=1; for(int i=0; i<n; i+=2){ p*=a[i]; } cout<<\"answer: \"<<p;", "int sum=0; for(...) if(a[i]>0) sum+=a[i];", "int sum=0; for(...) if(a[i]<0) sum+=a[i];", "int p=1; for(i=0;i<n;i++) if(i%2==1) p*=a[i];"],
+    ["В каком ответе проведена часть программы для нахождения произведения элементов массива с нечетными номерами.", "int p=1; for(int i=1; i<n; i+=2){ p*=a[i]; } cout<<\"answer: \"<<p;", "int p=1; for(int i=1; i<n; i+=2){ p*=a[i]; } cout<<\"answer: \"<<p;", "int p=1; for(i=0;i<n;i++) if(i%2==0) p*=a[i];", "int sum=0; for(...) if(a[i]>0) sum+=a[i];", "int sum=0; for(...) if(a[i]<0) sum+=a[i];"],
+
+    // --- Вопросы 141-200 (ООП, наследование, полиморфизм, шаблоны) ---
+    ["Укажите общий вид структуры класса наследника.", "class Derived:access Base{ тело класса наследника };", "class Derived:access Base{ тело класса наследника };", "class Base{ тело класса };", "class Base:access Derived{ тело класса наследника };", "Access derived:access derived{ тело класса наследника };"],
+    ["Если обращение между основным классом и классом наследника будет private тогда что будет:", "Свойства и методы protected и public основного класса будут private для класса наследника.", "Свойства и методы protected и public основного класса будут private для класса наследника.", "Свойства и методы protected основного класса будут public для класса наследника.", "Свойства и методы public основного класса будут protected для класса наследника.", "Свойства и методы public основного класса будут public для класса наследника."],
+    ["Если обращение между основным классом и классом наследника будет public тогда что будет:", "Свойства и методы protected и public основного класса будут public для класса наследника.", "Свойства и методы protected и public основного класса будут public для класса наследника.", "Свойства и методы public и private основного класса будут public для класса наследника.", "Свойства и методы protected и public основного класса будут private для класса наследника.", "Свойства и методы protected основного класса будут public для класса наследника."],
+    ["Если обращение между основным классом и классом наследника будет protected тогда что будет:", "Свойства и методы protected и public основного класса будут protected для класса наследника.", "Свойства и методы protected и public основного класса будут protected для класса наследника.", "Свойства и методы public и private основного класса будут public для класса наследника.", "Свойства и методы protected и public основного класса будут private для класса наследника.", "Свойства и методы protected основного класса будут public для класса наследника."],
+    ["Инкапсуляция это:", "Защищает информацию, относящуюся к объекту, от внешнего фактора", "Защищает информацию, относящуюся к объекту, от внешнего фактора", "Не защищает информацию, относящуюся к объекту, от внешнего фактора", "Отправить запрос другим членам класса", "Объект отправляет данные в качестве конструктора."],
+    ["Наследование это:", "Один объект получает свойства и методы другого объекта, то есть один класс получает наследование от другого класса.", "Один объект получает свойства и методы другого объекта, то есть один класс получает наследование от другого класса.", "Объекты не защищаются от внешнего фактора", "Вновь созданный класс, права на обращение которого всегда открыты.", "Копирует объекты в другой объект"],
+    ["Если при создании класса наследника уровень доступа (Access) при обращении к основному классу не указан тогда какой уровень доступа будет работать.", "Private", "Private", "Protected", "Public", "Уровень доступа необходимо указать"],
+    ["class A { public: void display(){ cout<<\"Hello world\"; } }; class B: public A{ public: void print(){ cout<<\"Hello world\"; }; }; Укажите название класса наследника.", "B", "B", "A", "A и B", "Класс наследник не создан"],
+    ["При создании конструктора класса наследника:", "При создании конструктора класса наследника, он должен иметь одинаковое название как название класса наследника.", "При создании конструктора класса наследника, он должен иметь одинаковое название как название класса наследника.", "При создании конструктора класса наследника, он должен иметь одинаковое название как название основного класса", "При создании класса наследника конструктор не создается.", "Все ответы верны"],
+    ["Укажите процесс наследования из нескольких классов.", "class Derived: Access Base_1, Access Base_2, ...{ };", "class Derived: Access Base_1, Access Base_2, ...{ };", "Class Base_1, Base_2, ...:Access Derived{};", "Class Derived: Access Derived_2: Access:Base{};", "class Derived:{ Access Base1, Base2, ...}{ };"],
+    ["Какой результат будет: #include<iostream> using namespace std; class Inkapsulyatsiya { private: int x; public: void set(int a){ x=a; } int get(){ return x; } }; int main(){ Inkapsulyatsiya obekt; obekt.set(5); cout<<obekt.get(); return 0; }", "5", "5", "a", "Set()", "Set(5)"],
+    ["В каком из следующих модификаторов доступа инкапсуляция защищает данные от внешних факторов", "Private и protected", "Private и protected", "Public", "Hidden", "Protected и public"],
+    ["Какой результат: #include<iostream> using namespace std; class A{ public: A(){ cout<<\"Hello programmer\\n\"; } }; class C:public A{ public: C(){ cout<<\"Programming C++ \\n\"; } }; int main(){ C x; }", "Hello programmer Programming C++", "Hello programmer Programming C++", "Programming C++", "Hello programmer", "При запуске возникнет ошибка"],
+    ["Если создать конструктор в основном классе и создать конструктор для класса наследника, при объявлении объекта класса наследника вызовется конструктор класса наследника и вызовется ли в тот момент конструктор основного класса?", "Да. Потому что он является наследником основного класса", "Да. Потому что он является наследником основного класса", "Нет. Конструктор класса работает при вызове объекта класса.", "Для классов наследников не создаются конструкторы класса.", "Все ответы верны"],
+    ["Какой результат: #include<iostream> using namespace std; class A{ public: void summ(int a,int b){ cout<<a+b<<endl; } }; class B:public A{ public: void print(){ cout<<\"Hello world\\n\"; } }; int main(){ B x; x.summ(15,25); x.print(); }", "40 Hello world", "40 Hello world", "40", "Hello world", "Hello"],
+    ["Какой результат: #include<iostream> using namespace std; class A{ private: int a=25; int minus(){ return a-10; } public: void display(){ cout<<minus(); } }; class B:public A{ public: }; int main(){ B x; x.display(); }", "15", "15", "25", "40", "35"],
+    ["Какой результат: #include<iostream> using namespace std; class A{ private: int a=25; int funk_1(){ return a-10; } int funk_2(){ return a*a; } public: int display(){ return funk_1()+funk_2(); } }; class B:public A{ public: void result(){ cout<<\"Result: \"<<display(); } }; int main(){ B x; x.result(); }", "Result: 640", "Result: 640", "Result: 625", "Result: 15", "Result: 40"],
+    ["Какой результат: #include<iostream> using namespace std; int a[5]={1,2,3,4,5}; class A{ public: int display(){ int s=0; for(int i=0;i<5;i++) s+=a[i]; return s; } int summa(int n){ int S=0; for(int i=1;i<=n;i++) S+=i; return S; } }; class B:public A{ public: void result(){ cout<<\"Result: \"<<display()<<endl; cout<<\"Result: \"<<summa(100)<<endl; } }; int main(){ B x; x.result(); }", "Result: 15 Result: 5050", "Result: 15 Result: 5050", "Result: 625", "Result: 5050", "Result: 15"],
+    ["Какой результат: #include<iostream> using namespace std; class A{ protected: int a=15; int b=25; public: void sum(){ cout<<a+b<<endl; } }; class B:public A{ public: void display(){ cout<<\"Result = \"<<a+b; } void hello(){ sum(); } }; int main(){ B x; x.hello(); }", "40", "40", "sum()", "Result = 40", "Результат не отображается"],
+    ["Какой результат: #include<iostream> using namespace std; class A{ private: void print1(){ cout<<\"Привет мир\"; } public: void display(){ cout<<\"Hello world\\n\"; } }; class B:public A{ private: int a=17,b=18; void print(){ cout<<a+b; } public: void setter(){ display(); } }; int main(){ B x; x.setter(); }", "Hello world", "Hello world", "Привет мир", "35", "На экране ничего не образуется"],
+    ["Полиморфизм реализован через механизмы:", "перегрузки функций, наследования, виртуальных функций", "перегрузки функций, наследования, виртуальных функций", "перегрузки функций, наследования методов, шаблонов", "наследования методов, виртуальных функций, шаблонов", "перегрузки функций, виртуальных функций, шаблонов"],
+    ["Что выведет: #include<iostream> using namespace std; class A{ public: A(){ f(); } virtual void f(){ cout<<\"A::f\"; } }; class B:public A{ public: void f(){ cout<<\"B::f\"; } }; int main(){ A* a=new B(); delete a; return 0; }", "A::f", "A::f", "B::f", "А", "f"],
+    ["Что выведет: class Base{ public: void show(){ cout<<\"Base\"; } }; class Derived:public Base{ public: void show(){ cout<<\"Derived\"; } }; int main(){ Base* b; Derived d; b=&d; b->show(); return 0; }", "Base", "Base", "Derived", "Base, Derived", "Error"],
+    ["Что выведет: class Base{ public: ~Base(){cout<<\"Base Destructor\"; } }; class Derived:public Base{ public: ~Derived(){cout<<\"Derived Destructor\"; } }; int main(){ Base* b=new Derived; delete b; return 0; }", "Base Destructor", "Base Destructor", "Error", "Derived Destructor Base Destructor", "Derived Destructor"],
+    ["Существуют ли чисто виртуальные деструкторы в C++?", "Да может существовать", "Да может существовать", "Нет не может", "Можно создавать самостоятельно", "Нужно обращаться к библиотеке"],
+    ["Дружественная функция - это", "функция, объявленная в классе с атрибутом friend, но не являющаяся членом класса", "функция, объявленная в классе с атрибутом friend, но не являющаяся членом класса", "функция другого класса, среди аргументов которой есть элементы данного класса", "функция, являющаяся членом класса и объявленная с атрибутом friend", "функция, которая в другом классе объявлена как дружественная данному"],
+    ["Выберите правильные утверждения:", "дружественная функция объявляется внутри класса, к элементам которого ей нужен доступ", "дружественная функция объявляется внутри класса, к элементам которого ей нужен доступ", "дружественная функция не может быть обычной функцией, а только методом другого класса", "одна функция может быть дружественной нескольким классам", "дружественная функция не может быть методом другого класса"],
+    ["Шаблон функции - это...", "определение функции, в которой типу обрабатываемых данных присвоено условное обозначение", "определение функции, в которой типу обрабатываемых данных присвоено условное обозначение", "прототип функции, в котором вместо имен параметров указан условный тип", "определение функции, в котором указаны возможные варианты типов обрабатываемых параметров", "определение функции, в котором в прототипе указан условный тип, а в определении указаны варианты типов"],
+    ["Полиморфизм -- это :", "средство, позволяющее использовать одно имя для обозначения действий, общих для родственных классов", "средство, позволяющее использовать одно имя для обозначения действий, общих для родственных классов", "средство, позволяющее в одном классе использовать методы с одинаковыми именами;", "средство, позволяющее в одном классе использовать методы с разными именами для выполнения одинаковых действий", "средство, позволяющее перегружать функции для работы с разными типами или разным количеством аргументов."],
+    ["Виртуальными называются функции:", "функции базового класса, которые могут быть переопределены в производном классе", "функции базового класса, которые могут быть переопределены в производном классе", "функции базового класса, которые не используются в производном классе;", "функции базового класса, которые не могут быть переопределены в базовом классе;", "функции производного класса, переопределенные относительно базового класса"],
+    ["Какое из следующих утверждений неверно в отношении переопределения функции?", "Функция может быть переопределена только один раз.", "Функция может быть переопределена только один раз.", "Переопределенная функция должна иметь тот же тип возврата и тот же список параметров.", "Переопределяющая функция не может быть выполнена внутри класса.", "Статическая функция не может быть переопределена."],
+    ["Ключевое слово Virtual используется для создания функции-члена класса Virtual?", "Base", "Base", "Derive", "Error", "Нет правильного ответа"],
+    ["Выберите правильное утверждение?", "Абстрактный класс - это класс, который содержит в себе хотя бы одну чисто виртуальную функцию.", "Абстрактный класс - это класс, который содержит в себе хотя бы одну чисто виртуальную функцию.", "Абстрактный класс не может иметь нормальных функций.", "Абстрактный класс может быть создан.", "Абстрактный класс не может быть унаследован"],
+    ["Что из следующего является правильным способом объявления функции Pure Virtual?", "virtual void show() = 0;", "virtual void show() = 0;", "virtual void show();", "virtual void show(){};", "virtual void show() = pure;"],
+    ["В какой части класса объявляются конструкторы и деструкторы?", "public", "public", "private", "protected", "В любой части"],
+    ["Сколько конструкторов можно объявлять в классе?", "Сколько угодно", "Сколько угодно", "Один", "Два", "Три"],
+    ["Сколько деструкторов можно объявлять в классе?", "Один", "Один", "Сколько угодно", "Два", "Три"],
+    ["Можно ли обращаться ко всем элементам класса?", "Да", "Да", "Нет", "Да, 50% элементов", "Да, 70% элементов"],
+    ["Можно ли запретить обращение ко всем элементам класса?", "Да", "Да", "Нет", "Да, 50% элементов", "Да, 70% элементов"],
+    ["С помощью шаблонных функций", "Отправляя тип данных в качестве параметра, алгоритм можно отличить от конкретных типов данных, в которых он работает", "Отправляя тип данных в качестве параметра, алгоритм можно отличить от конкретных типов данных, в которых он работает", "Балиш с несколькими классами шаблонов", "Функцию можно отличить от конкретного типа класса, в котором она работает", "Можно обеспечить несколько базовых классов"],
+    ["Преимущества использования шаблонов в том, что---", "Если алгоритм работы с переменными определен и настроен, то он применяется к каждому типу переменной без изменения кода", "Если алгоритм работы с переменными определен и настроен, то он применяется к каждому типу переменной без изменения кода", "Это то, как он предназначен для хранения и работы с организованными переменными", "Он предназначен для визуализации организованных переменных", "Он может быть применен к любому типу переменной, перезагружая код"],
+    ["На какие типы делятся шаблоны?", "Шаблон класса, шаблон функции", "Шаблон класса, шаблон функции", "Template шаблон, шаблон класса", "Template шаблон, class шаблон", "Шаблон функции, шаблон процедуры"],
+    ["В чем разница между шаблоном функций и перегрузкой функции?", "следовать шаблонам функций также выполняется таким же образом", "следовать шаблонам функций также выполняется таким же образом", "применение в шаблонах функций выполняется по-разному", "никаких действий в шаблонах функций не выполняется", "нет разницы"],
+    ["До объявления и определения шаблона функции пишется выражение ....", "template <>", "template <>", "template ()", "template {}", "Tamplete ()"],
+    ["Что дается в шаблоне функции <> скобки?", "входные параметры функции, выходное значение и локальные переменные", "входные параметры функции, выходное значение и локальные переменные", "функция выходные параметры, выходное значение и локальные переменные", "входные параметры функции, входные значения и локальные переменные", "выходные параметры функции, входное значение и локальные переменные"],
+    ["В показанном примере вместо T можно поставить ... идентификатор: template<class T> T summa(T a,T b){ return(a+b); }", "Любой", "Любой", "Целочисленный", "Действительный", "Логический"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<typename T> void fun(const T&x){ static int count=0; cout<<\"x = \"<<x<<\" count = \"<<count<<endl; ++count; } int main(){ fun<int>(1); cout<<endl; fun<int>(1); cout<<endl; fun<double>(1.1); cout<<endl; return 0; }", "x = 1 count = 0 x = 1 count = 1 x = 1.1 count = 0", "x = 1 count = 0 x = 1 count = 1 x = 1.1 count = 0", "x = 1 count = 0 x = 1 count = 0 x = 1.1 count = 0", "x = 1 count = 0 x = 1.1 count = 0 x = 1 count = 0", "x = 1 count = 1 x = 1 count = 1 x = 1.1 count = 1"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<typename T> T max(T x,T y){ return (x>y)?x:y; } int main(){ cout<<max(3,7)<<std::endl; cout<<max(3.0,7.0)<<std::endl; cout<<max(3,7.0)<<std::endl; return 0; }", "Ошибка в компиляции", "Ошибка в компиляции", "7 7.0 7.0", "7.0 7 7.0", "7.0 7.0 3.0"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<class T> class Test{ private: T val; public: static int count; Test(){ count++; } }; template<class T> int Test<T>::count=0; int main(){ Test<int> a; Test<int> b; Test<double> c; cout<<Test<int>::count<<endl; cout<<Test<double>::count<<endl; return 0; }", "2 1", "2 1", "1 2", "0 0", "1 0"],
+    ["Каким будет результат: #include<iostream> #include<stdlib.h> using namespace std; template<class T,class U> class A{ T x; U y; static int count; }; int main(){ A<char,char> a; A<int,int> b; cout<<sizeof(a)<<endl; cout<<sizeof(b)<<endl; return 0; }", "2 8", "2 8", "8 2", "4 6", "6 4"],
+    ["Каким будет результат: #include<iostream> #include<stdlib.h> using namespace std; template<class T,class U,class V=double> class A{ T x; U y; V z; static int count; }; int main(){ A<int,int> a; A<double,double> b; cout<<sizeof(a)<<endl; cout<<sizeof(b)<<endl; return 0; }", "16 24", "16 24", "24 16", "8 16", "16 8"],
+    ["В какой строке приводится результат программы: #include<iostream> using namespace std; template<class T,int max> int arrMin(T arr[],int n){ int m=max; for(int i=0;i<n;i++) if(arr[i]<m) m=arr[i]; return m; } int main(){ int arr1[]={10,20,15,12}; int n1=sizeof(arr1)/sizeof(arr1[0]); char arr2[]={1,2,3}; int n2=sizeof(arr2)/sizeof(arr2[0]); cout<<arrMin<int,10000>(arr1,n1)<<endl; cout<<arrMin<char,256>(arr2,n2); return 0; }", "10 1", "10 1", "10 2", "12 2", "2 12"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<int i> void fun(){ i=20; cout<<i;} int main(){ fun<10>(); return 0; }", "Ошибка в компиляции", "Ошибка в компиляции", "10", "20", "10.20"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<class T> T max(T &a,T &b){ return (a>b)?a:b; } template<> int max<int>(int &a,int &b){ cout<<\"Called \"; return (a>b)?a:b; } int main(){ int a=10,b=20; cout<<max<int>(a,b); }", "Called 20", "Called 20", "Called 10", "Called 30", "Called 2010"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<class T> T min(T &a,T &b){ return (a>b)?a:b; } template<> int min<int>(int &a,int &b){ cout<<\"Called \"; return (a>b)?a:b; } int main(){ int a=10,b=20; cout<<min<int>(a,b); }", "Called 20", "Called 20", "Called 10", "Called 30", "Called 1020"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<int n> struct funStruct{ static const int val = 2*funStruct<n-1>::val; }; template<> struct funStruct<0>{ static const int val = 1; }; int main(){ cout<<funStruct<10>::val<<endl; return 0; }", "1024", "1024", "10", "1", "2"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<int n> struct funStruct{ static const int val = 3*funStruct<n-1>::val; }; template<> struct funStruct<0>{ static const int val = 1; }; int main(){ cout<<funStruct<10>::val<<endl; return 0; }", "59049", "59049", "1", "9", "3"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<int n> struct funStruct{ static const int val = 2*funStruct<n-2>::val; }; template<> struct funStruct<0>{ static const int val = 1; }; int main(){ cout<<funStruct<10>::val<<endl; return 0; }", "32", "32", "1", "1024", "16"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<class T,int max> int arrMin(T arr[],int n){ int m=max; for(int i=0;i<n;i++) if(arr[i]<m) m=arr[i]; return m; } int main(){ int arr1[]={11,20,15,12}; int n1=sizeof(arr1)/sizeof(arr1[0]); char arr2[]={5,2,3}; int n2=sizeof(arr2)/sizeof(arr2[0]); cout<<arrMin<int,10000>(arr1,n1)<<endl; cout<<arrMin<char,256>(arr2,n2); return 0; }", "11 2", "11 2", "2 11", "3 2", "2 3"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<class T> T max(T &a,T &b){ return (a>b)?a:b; } template<> int max<int>(int &a,int &b){ return (a>b)?a:b; } int main(){ int a=10,b=20; cout<<max<int>(a,b); }", "20", "20", "10", "30", "10 20"],
+    ["Каким будет результат: #include<iostream> using namespace std; template<class T,class U,class V=double> class A{ T x; U y; V z; static int count; }; int main(){ A<int,int> a; A<double,double> b; cout<<sizeof(a)<<\" \"<<sizeof(b); }", "16 24", "16 24", "8 16", "16", "20 28"],
+    ["Что выйдет на экран: template<class T> T Max(T x,T y){ if(x>y) return x; else return y; } int main(){ int x=3,y=5,z=4; float a=1.75,b=2.25; double c=3.14159,d=2.71828; cout<<Max(z, Max<int>(a,b)); }", "4", "4", "2.25", "5", "3"],
+    ["Каким будет результат: template<class T,class U> class A{ T x; U y; }; int main(){ A<char,char> a; A<int,int> b; cout<<sizeof(a)<<\" \"<<sizeof(b); }", "2 8", "2 8", "1 4", "1", "4"],
+    ["Что выйдет на экран: template<class T> T Max(T x,T y){ if(x>y) return x; else return y; } int main(){ int x=3,y=5,z=4; float a=1.75,b=2.25; double c=3.14159,d=2.71828; cout<<Max(c,d)<<\"\\t\"<<Max(a,b); }", "3.14159 2.25", "3.14159 2.25", "3 2.25", "3 2", "3 5 4"],
+    ["Что выйдет на экран: template<class T> T Max(T x,T y){ if(x<y) return x; else return y; } int main(){ float a=1.75,b=2.25; cout<<Max<int>(a,b)<<\"\\n\"; }", "1", "1", "2", "1.75", "2.25"],
+    ["Что выйдет на экран: template<class T> T Max(T x,T y){ if(x<y) return x; else return y; } int main(){ float a=1.75,b=2.25; cout<<Max(a,b)<<\"\\n\"; }", "1.75", "1.75", "1", "2", "2.25"],
+    ["Что выйдет на экран: template<typename T> T max1(T x,T y){ return (x>y)?x:y; } int main(){ cout<<max1(3,7)<<\"\\t\"<<max1(4.5,6.3); return 0; }", "7 6.3", "7 6.3", "3 4.5", "7", "6.3"],
+    ["Определите результат работы: class Base { public: ~Base() {cout<<\"Base Destructor\"; } }; class Derived: public Base { public: ~Derived() { cout<<\"Derived Destructor\"; } }; int main(){ Base* b = new Derived; delete b; return 0; }", "Base Destructor", "Base Destructor", "Error", "Derived Destructor Base Destructor", "Derived Destructor"],
+    ["Определите результат: class A { public: void print1(){ cout<<\"Привет мир\"; } private: void display(){ cout<<\"Hello world\\n\"; } }; class B: public A { private: int a,b; void print(){ cout<<a+b; } public: B(int x,int y){a=x;b=y;} void setter(){ print1(); } }; int main(){ B x(2,3); x.setter(); }", "Привет мир", "Привет мир", "Hello World", "5", "На экране ничего не образуется"],
+    ["Определите результат: class A { private: int a; public: A(int b=20){ a=b;} int minus(){return a-10;} int plus(){return a+10;} void display(){ cout<<minus(); } }; class B: public A { public: void display(){ cout<<plus(); } }; int main(){ B x; x.display(); }", "25", "25", "10", "15", "35"],
+    ["Определите результат: class Base { public: void show(){ cout<<\"Derived\"; } }; class Derived:public Base{ public: void show(){ cout<<\"Base\"; } }; int main(){ Base* b; Derived d; b=&d; b->show(); }", "Derived", "Derived", "Base", "Base, Derived", "Error"],
+    ["Определите результат: class A { protected: int a,b; public: A(int x=11,int y=9){a=x;b=y;} void sum(){ cout<<a+b<<endl; } }; class B:public A { public: void display(){ cout<<\"Result = \"<<a+b; } void hello(){ sum(); } }; int main(){ B x; x.hello(); }", "20", "20", "40", "Result = 40", "30"],
+    ["Определите результат: class A { public: void summ(int a,int b){ cout<<a+b<<endl; } }; class B:public A{ public: void print(){ cout<<\"Hello world\\n\"; } }; int main(){ B x; x.summ(15,11); x.print(); }", "26 Hello world", "26 Hello world", "26", "Hello world", "40 Hello"],
+    ["Определите результат: class A { public: A(){ f(); } virtual void f(){ cout<<\"A::f\"; } }; class B:public A { public: void f(){ cout<<\"B::f\"; } }; int main(){ A* a = new B(); delete a; }", "A::f", "A::f", "B::f", "А", "F"],
+    ["Определите результат: int a[5]={1,2,3,4,5}; class A{ public: int display(){ int s=5; for(int i=0;i<5;i++) s+=a[i]; return s; } int summa(int n){ int S=50; for(int i=1;i<=n;i++) S+=i; return S; } }; class B:public A{ public: void result(){ cout<<\"Result: \"<<display()<<endl; cout<<\"Result: \"<<summa(100)<<endl; } }; int main(){ B x; x.result(); }", "Result: 20 Result: 5100", "Result: 20 Result: 5100", "Result: 625", "Result: 15 5050", "Result: 15"],
+    ["Определите результат: class A{ private: int a; int funk_1(){return a-10;} int funk_2(){return a*a;} public: A(int x=11){a=x;} int display(){return funk_1()+funk_2();} }; class B:public A{ public: void result(){ cout<<\"Result: \"<<display(); } }; int main(){ B x; x.result(); }", "Result: 122", "Result: 122", "Result: 625", "Result: 640", "Result: 40"],
+    ["Определите результат: class A{ public: A(){ cout<<\"Hello programmer\\n\"; } }; class C:public A{ public: C(){ cout<<\"Programming C++ \\n\"; } }; int main(){ C x; }", "Hello programmer Programming C++", "Hello programmer Programming C++", "Programming C++", "Hello programmer", "Programming C++ Hello programmer"],
+    ["Можно ли перегружать шаблон функции?", "Можно", "Можно", "Можно только при помощи массива", "Можно, только при помощи файла", "Нельзя"],
+    ["Может ли шаблон функции возвращать объект?", "Можно, только объект должен иметь тип функции шаблона", "Можно, только объект должен иметь тип функции шаблона", "Можно, только для функции типа \"шаблон\"", "Можно, только если это также должно быть в функции шаблона", "Нельзя"],
+    ["Что такое шаблон функции?", "Функция, которая может работать с различными типами данных.", "Функция, которая может работать с различными типами данных.", "Функция, которая работает только с целыми числами.", "Функция, которая работает только с числами с плавающей точкой.", "Функция, которая может принимать произвольное количество аргументов."],
+    ["Как объявляется шаблон функции в C++?", "template <class T>", "template <class T>", "template <typename T>", "template <class T, typename U>", "Все ответы верны"],
+    ["Как можно задать несколько параметров шаблона функции?", "Все варианты верны", "Все варианты верны", "template <typename T, typename U>", "template <class T, class U>", "template <typename T, class U>"],
+    ["Преимущества использования шаблонов в том, что---", "Если алгоритм работы с переменными определен и настроен, то он применяется к каждому типу переменной без изменения кода", "Если алгоритм работы с переменными определен и настроен, то он применяется к каждому типу переменной без изменения кода", "Это то, как он предназначен для хранения и работы с организованными переменными", "Он предназначен для визуализации организованных переменных", "Нет правильных ответов"],
+    ["В показанном примере вместо T можно поставить ... идентификатор: template<class T> T summa(T a,T b){ return(a+b); }", "Любой", "Любой", "Целочисленный", "Действительный", "Логический"],
+    ["Что такое шаблонный класс в C++?", "Класс, который может генерировать объекты различных типов при компиляции.", "Класс, который может генерировать объекты различных типов при компиляции.", "Класс, который использует шаблонный метод для своих функций-членов.", "Класс, который не может хранить объекты разных типов данных.", "Класс, который наследует свои свойства от базового шаблонного класса."],
+    ["Как объявить шаблонный класс в C++?", "template<class T> class MyClass {}", "template<class T> class MyClass {}", "class template <T> MyClass {}", "class MyClass<T> {}", "template<class> class MyClass {}"],
+    ["Какие операции можно выполнять над объектами шаблонного класса в C++?", "Копирование, перемещение, присваивание.", "Копирование, перемещение, присваивание.", "Только копирование.", "Только присваивание.", "Только перемещение."]
+];
+
+// ============================================================
+// 2. ЛОГИКА ПРИЛОЖЕНИЯ
+// ============================================================
+
+console.log(`✅ Загружено вопросов: ${ALL_QUESTIONS_RAW.length}`);
+
+let currentQuestions = [];
+let currentIdx = 0;
+let timerInterval = null;
+
+// ---- Инициализация меню ----
+function initMenu() {
+    const container = document.getElementById('stages-container');
+    container.innerHTML = '';
+    const total = ALL_QUESTIONS_RAW.length;
+    const perStage = 30;
+    const stages = Math.ceil(total / perStage);
+    for (let i = 0; i < stages; i++) {
+        const start = i * perStage;
+        const end = Math.min(start + perStage, total);
+        const card = document.createElement('div');
+        card.className = 'stage-card';
+        card.innerHTML = `
+            <i class="fas fa-layer-group"></i>
+            <h3>Этап ${i+1}</h3>
+            <p>Вопросы ${start+1} - ${end}</p>
+            <small style="color:var(--text-secondary);">${end-start} вопросов</small>
+        `;
+        card.onclick = () => startTest(ALL_QUESTIONS_RAW.slice(start, end), `Этап ${i+1}`);
+        container.appendChild(card);
+    }
+    // Все вопросы
+    const allCard = document.createElement('div');
+    allCard.className = 'stage-card';
+    allCard.innerHTML = `
+        <i class="fas fa-database" style="color:var(--success);"></i>
+        <h3>Все вопросы</h3>
+        <p>1 - ${total}</p>
+        <small style="color:var(--text-secondary);">${total} вопросов</small>
+    `;
+    allCard.onclick = () => startTest([...ALL_QUESTIONS_RAW], 'Все вопросы');
+    container.appendChild(allCard);
+
+    updateStats();
+    renderSidebar();
+}
+
+// ---- Статистика ----
+function updateStats() {
+    const results = JSON.parse(localStorage.getItem('tr_results') || '[]');
+    const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+    document.getElementById('totalTests').textContent = results.length;
+    document.getElementById('totalErrors').textContent = errors.length;
+    if (results.length > 0) {
+        const avg = results.reduce((a,b) => a + b.score, 0) / results.length;
+        document.getElementById('avgScore').textContent = Math.round(avg) + '%';
+        const best = Math.max(...results.map(r => r.score));
+        document.getElementById('bestScore').textContent = best + '%';
+    }
+}
+
+// ---- Боковая панель ----
+function renderSidebar() {
+    const results = JSON.parse(localStorage.getItem('tr_results') || '[]');
+    const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+    const rDiv = document.getElementById('results-history');
+    rDiv.innerHTML = results.slice(0, 15).map(r => `
+        <div style="padding:12px; border-bottom:1px solid var(--border);">
+            <div><strong>${r.date}</strong></div>
+            <div>Оценка: ${r.grade} (${r.score}%)</div>
+            <div>${r.correct}/${r.total}</div>
+        </div>
+    `).join('') || '<p style="text-align:center;">Нет записей</p>';
+
+    const eDiv = document.getElementById('errors-history');
+    eDiv.innerHTML = errors.slice(0, 15).map(e => `
+        <div style="padding:12px; background:rgba(239,68,68,0.1); border-radius:12px; margin-bottom:10px;">
+            <div><strong>❌</strong> ${e.q.substring(0,70)}${e.q.length>70?'...':''}</div>
+            <div><strong>✅</strong> ${e.a}</div>
+            <small>${e.date}</small>
+        </div>
+    `).join('') || '<p style="text-align:center;">Ошибок нет! 🎉</p>';
+}
+
+function toggleSidePanel() {
+    document.getElementById('side-panel').classList.toggle('active');
+    document.getElementById('overlay').classList.toggle('active');
+    if (document.getElementById('side-panel').classList.contains('active')) renderSidebar();
+}
+
+function clearResults() {
+    if(confirm('Очистить историю результатов?')) {
+        localStorage.removeItem('tr_results');
+        updateStats();
+        renderSidebar();
+        showToast('История очищена');
+    }
+}
+
+function clearErrors() {
+    if(confirm('Очистить список ошибок?')) {
+        localStorage.removeItem('tr_errors');
+        renderSidebar();
+        showToast('Ошибки очищены');
+    }
+}
+
+// ---- Режимы тестирования ----
+function startErrorsOnly() {
+    const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+    if(errors.length === 0) { showToast('Нет вопросов с ошибками! 🎉', 'info'); return; }
+    const qs = errors.map(e => ALL_QUESTIONS_RAW.find(q => q[0] === e.q)).filter(Boolean);
+    if(qs.length) startTest(qs, 'Только ошибки');
+}
+
+function startRandom(n) {
+    const shuffled = [...ALL_QUESTIONS_RAW];
+    for(let i=shuffled.length-1; i>0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    startTest(shuffled.slice(0, Math.min(n, shuffled.length)), `Случайные ${n}`);
+}
+
+function startSession() {
+    startRandom(18);
+}
+
+function startSingleQuestion(idx) {
+    startTest([ALL_QUESTIONS_RAW[idx]], 'Один вопрос');
+    document.getElementById('searchResults').innerHTML = '';
+    document.getElementById('searchInput').value = '';
+}
+
+// ---- Поиск ----
+function searchQuestions() {
+    const term = document.getElementById('searchInput').value.toLowerCase().trim();
+    const res = document.getElementById('searchResults');
+    if(!term) { res.innerHTML = ''; return; }
+    const found = ALL_QUESTIONS_RAW
+        .map((q,i) => ({ q, i }))
+        .filter(({q}) => q[0].toLowerCase().includes(term))
+        .slice(0, 20);
+    res.innerHTML = found.map(({q,i}) => `
+        <div class="stage-card" style="margin-bottom:10px; cursor:pointer;" onclick="startSingleQuestion(${i})">
+            <strong>Вопрос ${i+1}</strong>
+            <p style="margin-top:6px;">${q[0].substring(0,100)}${q[0].length>100?'...':''}</p>
+        </div>
+    `).join('') || '<div style="padding:20px;text-align:center;">Ничего не найдено</div>';
+}
+
+// ---- Запуск теста ----
+function startTest(qs, name) {
+    // Перемешиваем варианты внутри каждого вопроса
+    currentQuestions = qs.map((q, idx) => {
+        const correct = q[1];
+        const opts = [...q.slice(2)];
+        for(let i=opts.length-1; i>0; i--) {
+            const j = Math.floor(Math.random()*(i+1));
+            [opts[i], opts[j]] = [opts[j], opts[i]];
+        }
+        const globalIdx = ALL_QUESTIONS_RAW.findIndex(x => x[0] === q[0]);
+        return {
+            q: q[0],
+            options: opts,
+            correctIdx: opts.indexOf(correct),
+            user: null,
+            globalIndex: globalIdx >= 0 ? globalIdx : idx
+        };
+    });
+    currentIdx = 0;
+    document.getElementById('menu-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    document.getElementById('result-screen').classList.add('hidden');
+    renderNavigation();
+    renderQuestion();
+    startTimer();
+}
+
+// ---- Таймер ----
+function startTimer() {
+    if(timerInterval) clearInterval(timerInterval);
+    let time = 3600;
+    const update = () => {
+        time--;
+        const m = Math.floor(time/60);
+        const s = time%60;
+        document.getElementById('timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+        if(time <= 0) { clearInterval(timerInterval); showResult(); }
+    };
+    update();
+    timerInterval = setInterval(update, 1000);
+}
+
+// ---- Навигация по номерам ----
+function renderNavigation() {
+    const nav = document.getElementById('numbers-nav');
+    nav.innerHTML = '';
+    currentQuestions.forEach((_, i) => {
+        const div = document.createElement('div');
+        div.className = 'num-item';
+        div.textContent = i+1;
+        div.onclick = () => { currentIdx = i; renderQuestion(); };
+        nav.appendChild(div);
+    });
+    updateNavActive();
+}
+
+function updateNavActive() {
+    const items = document.querySelectorAll('.num-item');
+    items.forEach((el, i) => {
+        el.classList.remove('active', 'correct', 'wrong');
+        if(i === currentIdx) el.classList.add('active');
+        const q = currentQuestions[i];
+        if(q && q.user !== null) {
+            el.classList.add(q.user === q.correctIdx ? 'correct' : 'wrong');
+        }
+    });
+}
+
+// ---- Рендер вопроса ----
+function renderQuestion() {
+    const q = currentQuestions[currentIdx];
+    if(!q) return;
+    const progress = ((currentIdx+1)/currentQuestions.length*100).toFixed(1);
+    document.getElementById('progress-fill').style.width = progress + '%';
+    document.getElementById('progress-text').textContent = `Прогресс: ${currentIdx+1}/${currentQuestions.length} (${progress}%)`;
+    document.getElementById('question-counter').innerHTML = `<i class="fas fa-question-circle"></i> Вопрос ${currentIdx+1} из ${currentQuestions.length}`;
+    document.getElementById('q-text').innerHTML = `<span style="background:var(--primary);color:white;padding:4px 14px;border-radius:30px;display:inline-block;margin-bottom:12px;">Вопрос ${q.globalIndex+1}</span><br>${q.q}`;
+
+    const box = document.getElementById('options-box');
+    box.innerHTML = '';
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.innerHTML = `<strong>${String.fromCharCode(65+i)})</strong> ${opt}`;
+        if(q.user !== null) {
+            btn.disabled = true;
+            if(i === q.correctIdx) btn.classList.add('correct');
+            if(i === q.user && i !== q.correctIdx) btn.classList.add('wrong');
+        } else {
+            btn.onclick = () => {
+                q.user = i;
+                if(i === q.correctIdx) showToast('✅ Правильно!', 'success');
+                else showToast(`❌ Неправильно! Правильный ответ: ${q.options[q.correctIdx]}`, 'info');
+                renderQuestion();
+                updateNavActive();
+            };
+        }
+        box.appendChild(btn);
+    });
+    updateNavActive();
+}
+
+function prevQuestion() { if(currentIdx > 0) { currentIdx--; renderQuestion(); } }
+function nextQuestion() {
+    if(currentIdx < currentQuestions.length - 1) { currentIdx++; renderQuestion(); }
+    else showResult();
+}
+
+function confirmFinish() { if(confirm('Завершить тест?')) showResult(); }
+
+function showHint() {
+    const q = currentQuestions[currentIdx];
+    if(q) {
+        const hint = `💡 Правильный ответ: "${q.options[q.correctIdx].substring(0,60)}${q.options[q.correctIdx].length>60?'...':''}"`;
+        showToast(hint, 'info');
+    }
+}
+
+// ---- Результат ----
+function showResult() {
+    clearInterval(timerInterval);
+    const correct = currentQuestions.filter(q => q.user === q.correctIdx).length;
+    const percent = Math.round((correct/currentQuestions.length)*100);
+    let grade, color;
+    if(percent >= 85) { grade = 5; color = '#10b981'; }
+    else if(percent >= 70) { grade = 4; color = '#3b82f6'; }
+    else if(percent >= 60) { grade = 3; color = '#f59e0b'; }
+    else { grade = 2; color = '#ef4444'; }
+
+    document.getElementById('grade-display').textContent = grade;
+    document.getElementById('grade-display').style.color = color;
+    document.getElementById('stats-display').textContent = `${correct}/${currentQuestions.length} (${percent}%)`;
+    document.getElementById('details-display').innerHTML = `
+        ✅ Правильных: ${correct}<br>
+        ❌ Ошибок: ${currentQuestions.filter(q => q.user !== null && q.user !== q.correctIdx).length}<br>
+        ⏸ Без ответа: ${currentQuestions.filter(q => q.user === null).length}
+    `;
+
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('result-screen').classList.remove('hidden');
+
+    const results = JSON.parse(localStorage.getItem('tr_results') || '[]');
+    results.unshift({ date: new Date().toLocaleString(), score: percent, correct, total: currentQuestions.length, grade });
+    localStorage.setItem('tr_results', JSON.stringify(results.slice(0,50)));
+
+    const errors = JSON.parse(localStorage.getItem('tr_errors') || '[]');
+    currentQuestions.filter(q => q.user !== q.correctIdx).forEach(e => {
+        if(!errors.some(err => err.q === e.q)) {
+            errors.unshift({ q: e.q, a: e.options[e.correctIdx], date: new Date().toLocaleString() });
+        }
+    });
+    localStorage.setItem('tr_errors', JSON.stringify(errors.slice(0,100)));
+
+    updateStats();
+    renderSidebar();
+}
+
+// ---- Вспомогательные ----
+function showToast(msg, type='success') {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.innerHTML = `<i class="fas fa-${type==='success'?'check-circle':'info-circle'}"></i> ${msg}`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+}
+
+function shareResult() {
+    const stats = document.getElementById('stats-display').textContent;
+    navigator.clipboard.writeText(`Мой результат по программированию: ${stats}`);
+    showToast('Результат скопирован! 📋');
+}
+
+function toggleTheme() {
+    const html = document.documentElement;
+    const icon = document.getElementById('theme-icon');
+    if(html.getAttribute('data-theme') === 'dark') {
+        html.removeAttribute('data-theme');
+        icon.className = 'fas fa-moon';
+    } else {
+        html.setAttribute('data-theme', 'dark');
+        icon.className = 'fas fa-sun';
+    }
+}
+
+// ---- Запуск ----
+initMenu();
+</script>
+</body>
+</html>
